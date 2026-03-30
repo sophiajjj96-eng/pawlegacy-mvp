@@ -839,6 +839,44 @@
     margin: 0;
   }
   .checklist-list input { width: auto; }
+
+  .compliance-notice {
+    border: 1px solid rgba(61,43,31,0.22);
+    background: #fffdf8;
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-mid);
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+  .compliance-notice strong { color: var(--bark); }
+
+  .exec-flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.55rem;
+    margin: 0.8rem 0 1rem;
+  }
+  .exec-step {
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    border-radius: 10px;
+    padding: 0.6rem;
+    box-shadow: var(--shadow);
+  }
+  .exec-step .n {
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.2rem;
+  }
+  .exec-step .t {
+    font-size: 0.82rem;
+    color: var(--bark);
+    font-weight: 600;
+  }
   .field-help {
     font-size: 0.76rem;
     color: var(--text-light);
@@ -999,6 +1037,7 @@
     .continuity-cards { grid-template-columns: 1fr; }
     .packet-grid { grid-template-columns: 1fr; }
     .social-grid { grid-template-columns: 1fr; }
+    .exec-flow { grid-template-columns: 1fr 1fr; }
     .mascot-inline, .mascot-inline.right { justify-content: flex-start; }
     .mascot-img { width: 78px; }
   }
@@ -1306,6 +1345,16 @@
         <div class="mascot-bubble"><strong>Trust Expert:</strong> Your trust draft is ready for review.</div>
         <img class="mascot-img" src="images/mascot-expert.png" alt="Legal expert mascot">
       </div>
+      <div class="compliance-notice">
+        <strong>Draft status: Planning Draft — Not Executed.</strong><br>
+        Structured for New York pet trust planning. Final enforceability depends on attorney review, proper execution, notarization, and funding.
+      </div>
+      <div class="exec-flow" aria-label="Execution flow">
+        <div class="exec-step"><div class="n">Step 1</div><div class="t">Generate Draft</div></div>
+        <div class="exec-step"><div class="n">Step 2</div><div class="t">Attorney Review</div></div>
+        <div class="exec-step"><div class="n">Step 3</div><div class="t">Sign & Notarize</div></div>
+        <div class="exec-step"><div class="n">Step 4</div><div class="t">Activate Trust</div></div>
+      </div>
       <div id="result-summary" class="result-summary"></div>
       <div id="continuity-summary" class="calc-result" style="margin-bottom:1rem;"></div>
       <div class="doc-content" id="doc-content"></div>
@@ -1342,10 +1391,16 @@
   <div class="form-container">
     <div class="form-header">
       <h2>Legal Review & Notarization Support</h2>
-      <p>Track readiness for attorney review, notarization, and funding confirmation in a New York-oriented trust workflow.</p>
+      <p>Track readiness for attorney review, notarization, and funding confirmation in a New York-oriented trust workflow designed around EPTL § 7-8 planning requirements.</p>
       <div class="mascot-inline" style="margin-top:0.8rem;">
         <img class="mascot-img" src="images/mascot-expert.png" alt="Legal guide mascot">
         <div class="mascot-bubble"><strong>Trust Expert:</strong> Next: legal review and notarization.</div>
+      </div>
+      <div class="exec-flow" aria-label="Execution flow legal">
+        <div class="exec-step"><div class="n">Step 1</div><div class="t">Generate Draft</div></div>
+        <div class="exec-step"><div class="n">Step 2</div><div class="t">Attorney Review</div></div>
+        <div class="exec-step"><div class="n">Step 3</div><div class="t">Sign & Notarize</div></div>
+        <div class="exec-step"><div class="n">Step 4</div><div class="t">Activate Trust</div></div>
       </div>
     </div>
 
@@ -1624,6 +1679,7 @@ DOCUMENT METADATA
 - State: ${state}
 - Date generated: ${generatedDate}
 - Draft status: PRE-EXECUTION LEGAL PLANNING DRAFT
+- Review status: Attorney review pending
 
 COMPLIANCE NOTICE
 ${nyComplianceLine}
