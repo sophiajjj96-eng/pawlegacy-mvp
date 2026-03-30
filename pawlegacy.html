@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawLegacy — Protect Your Pet's Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9;
+    --bark: #3D2B1F; --bark-light: #6B4C3B;
+    --amber: #E8A045; --amber-light: #F5C97A; --amber-pale: #FDF3E3;
+    --sage: #5C7A5F; --sage-light: #8BA88E; --sage-pale: #EBF2EC;
+    --terracotta: #C46B45; --terracotta-pale: #F7EAE4;
+    --indigo: #4A4E9A; --indigo-pale: #EEEFFE;
+    --text-main: #2A1F17; --text-mid: #6B5A4E; --text-light: #A8948A;
+    --border: rgba(61,43,31,0.12); --shadow: 0 4px 24px rgba(61,43,31,0.08);
+    --radius: 16px; --radius-sm: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text-main); min-height:100vh; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(250,247,242,0.93); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:0 1.5rem; height:64px; display:flex; align-items:center; justify-content:space-between; }
+  .nav-logo { font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:700; color:var(--bark); display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-links { display:flex; gap:1.25rem; align-items:center; flex-wrap:wrap; }
+  .nav-links a { text-decoration:none; color:var(--text-mid); font-size:0.83rem; font-weight:500; cursor:pointer; transition:color .2s; }
+  .nav-links a:hover { color:var(--bark); }
+  .nav-cta { background:var(--bark); color:var(--cream)!important; padding:7px 16px; border-radius:40px; font-weight:600!important; }
+  .nav-cta:hover { background:var(--bark-light)!important; }
+  .page { display:none; padding-top:64px; min-height:100vh; }
+  .page.active { display:block; }
+
+  /* HOME */
+  .hero { padding:5.5rem 2rem 3.5rem; max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:center; }
+  .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--sage-pale); color:var(--sage); font-size:0.73rem; font-weight:600; padding:5px 13px; border-radius:40px; margin-bottom:1.4rem; letter-spacing:.04em; text-transform:uppercase; }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,3.5vw,3.1rem); line-height:1.15; color:var(--bark); margin-bottom:1.1rem; }
+  .hero h1 em { font-style:italic; color:var(--terracotta); }
+  .hero p { font-size:1rem; line-height:1.75; color:var(--text-mid); margin-bottom:2rem; }
+  .hero-actions { display:flex; gap:.9rem; align-items:center; flex-wrap:wrap; }
+  .btn-primary { background:var(--bark); color:var(--cream); border:none; padding:13px 28px; border-radius:40px; font-family:'DM Sans',sans-serif; font-size:.93rem; font-weight:600; cursor:pointer; transition:transform .2s,background .2s; }
+  .btn-primary:hover { background:var(--bark-light); transform:translateY(-1px); }
+  .btn-secondary { background:transparent; color:var(--bark); border:1.5px solid var(--bark); padding:12px 22px; border-radius:40px; font-family:'DM Sans',sans-serif; font-size:.93rem; font-weight:500; cursor:pointer; transition:background .2s; }
+  .btn-secondary:hover { background:var(--amber-pale); }
+  .hero-visual { background:var(--warm-white); border-radius:24px; border:1px solid var(--border); padding:2rem; box-shadow:var(--shadow); }
+  .hero-stat-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+  .hero-stat { background:var(--cream); border-radius:var(--radius-sm); padding:1rem; text-align:center; }
+  .hero-stat .num { font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:var(--bark); }
+  .hero-stat .label { font-size:.73rem; color:var(--text-light); margin-top:2px; }
+  .hero-doc-preview { background:var(--cream); border-radius:var(--radius-sm); padding:1.2rem; border:1px dashed var(--amber-light); }
+  .doc-line { height:8px; background:var(--border); border-radius:4px; margin-bottom:8px; }
+  .doc-line.short { width:60%; } .doc-line.amber { background:var(--amber-light); width:40%; }
+  .doc-tag { display:inline-block; background:var(--sage-pale); color:var(--sage); font-size:.7rem; font-weight:600; padding:3px 10px; border-radius:20px; margin-top:4px; }
+  .stats-strip { background:var(--bark); padding:2.5rem 2rem; }
+  .stats-inner { max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; text-align:center; }
+  .strip-stat .n { font-family:'Playfair Display',serif; font-size:2.3rem; color:var(--amber-light); font-weight:700; }
+  .strip-stat .l { font-size:.83rem; color:rgba(250,247,242,.7); margin-top:4px; }
+  .section { padding:4.5rem 2rem; max-width:1100px; margin:0 auto; }
+  .section-label { font-size:.73rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--terracotta); margin-bottom:.7rem; }
+  .section-title { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.5rem); color:var(--bark); margin-bottom:2.5rem; }
+  .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1.75rem; }
+  .step { background:var(--warm-white); border-radius:var(--radius); padding:1.75rem; border:1px solid var(--border); }
+  .step-num { width:40px; height:40px; background:var(--amber-pale); color:var(--amber); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:.9rem; }
+  .step h3 { font-size:.97rem; font-weight:600; color:var(--bark); margin-bottom:.45rem; }
+  .step p { font-size:.855rem; color:var(--text-mid); line-height:1.65; }
+  footer { background:var(--bark); color:rgba(250,247,242,.6); text-align:center; padding:2rem; font-size:.78rem; }
+  footer strong { color:var(--amber-light); }
+
+  /* FORM */
+  .form-container { max-width:800px; margin:0 auto; padding:3rem 2rem; }
+  .form-header { margin-bottom:2.25rem; }
+  .form-header h2 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--bark); margin-bottom:.45rem; }
+  .form-header p { color:var(--text-mid); font-size:.93rem; }
+  .form-card { background:var(--warm-white); border-radius:var(--radius); border:1px solid var(--border); padding:1.9rem; margin-bottom:1.4rem; }
+  .form-card h3 { font-size:.78rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--amber); margin-bottom:1.15rem; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; }
+  .form-group { margin-bottom:0; }
+  .form-group.full { grid-column:1/-1; }
+  label { display:block; font-size:.79rem; font-weight:500; color:var(--text-mid); margin-bottom:5px; }
+  input,select,textarea { width:100%; background:var(--cream); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:.89rem; color:var(--text-main); transition:border-color .2s; outline:none; }
+  input:focus,select:focus,textarea:focus { border-color:var(--amber); background:var(--warm-white); }
+  textarea { min-height:78px; resize:vertical; }
+  .pet-row { background:var(--cream); border-radius:var(--radius-sm); padding:1rem; margin-bottom:.7rem; border:1px solid var(--border); display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:.7rem; align-items:end; }
+  .btn-add-pet { background:none; border:1.5px dashed var(--border); border-radius:var(--radius-sm); padding:10px; width:100%; font-family:'DM Sans',sans-serif; font-size:.855rem; color:var(--text-light); cursor:pointer; transition:border-color .2s,color .2s; margin-top:.45rem; }
+  .btn-add-pet:hover { border-color:var(--amber); color:var(--amber); }
+  .btn-remove { background:none; border:none; color:var(--text-light); cursor:pointer; font-size:1.05rem; padding:6px; border-radius:4px; line-height:1; }
+  .btn-remove:hover { color:var(--terracotta); }
+
+  /* CALCULATOR */
+  .calc-card { background:linear-gradient(135deg,var(--bark) 0%,#5A3E2F 100%); border-radius:var(--radius); padding:2rem; margin-bottom:1.4rem; color:var(--cream); position:relative; overflow:hidden; }
+  .calc-card::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; background:rgba(255,255,255,.04); border-radius:50%; }
+  .calc-card h3 { font-size:.78rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--amber-light); margin-bottom:1.15rem; }
+  .calc-card label { color:rgba(250,247,242,.7); }
+  .calc-card input,.calc-card select { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:var(--cream); }
+  .calc-card input:focus,.calc-card select:focus { border-color:var(--amber-light); background:rgba(255,255,255,.15); }
+  .calc-card select option { background:var(--bark); color:var(--cream); }
+  .calc-card input::placeholder { color:rgba(250,247,242,.4); }
+  .calc-result { margin-top:1.5rem; background:rgba(255,255,255,.08); border-radius:var(--radius-sm); padding:1.25rem; border:1px solid rgba(255,255,255,.15); display:none; }
+  .calc-result.visible { display:block; animation:fadeIn .4s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .calc-verdict { font-size:.97rem; font-weight:600; color:var(--cream); margin-bottom:.5rem; line-height:1.6; }
+  .calc-verdict .verdict-amt { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--amber-light); }
+  .calc-breakdown { margin-top:.75rem; display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+  .calc-breakdown-item { font-size:.77rem; color:rgba(250,247,242,.65); }
+  .calc-breakdown-item strong { color:var(--amber-light); display:block; font-size:.88rem; margin-bottom:1px; }
+  .calc-status { display:inline-flex; align-items:center; gap:6px; font-size:.73rem; font-weight:600; padding:4px 12px; border-radius:20px; margin-top:.75rem; }
+  .calc-status.ok   { background:rgba(92,122,95,.35);   color:#A8D8AC; }
+  .calc-status.warn { background:rgba(232,160,69,.3);   color:var(--amber-light); }
+  .calc-status.low  { background:rgba(196,107,69,.3);   color:#F5A88A; }
+  .calc-suggestion { font-size:.79rem; color:rgba(250,247,242,.6); margin-top:.7rem; line-height:1.55; font-style:italic; }
+
+  /* CARE CONTINUITY */
+  .continuity-section { display:none; background:var(--warm-white); border-radius:var(--radius); border:2px solid var(--indigo); padding:2rem; margin-top:1.4rem; position:relative; }
+  .continuity-section.visible { display:block; animation:fadeIn .5s ease; }
+  .continuity-badge { position:absolute; top:-12px; left:24px; background:var(--indigo); color:#fff; font-size:.7rem; font-weight:600; padding:4px 14px; border-radius:20px; letter-spacing:.04em; text-transform:uppercase; }
+  .continuity-intro { font-size:.865rem; color:var(--text-mid); line-height:1.65; margin-bottom:1.4rem; border-left:3px solid var(--indigo); padding-left:1rem; }
+  .continuity-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.4rem; }
+  .cc-card { border-radius:var(--radius-sm); padding:1.2rem; border:1px solid var(--border); }
+  .cc-card.problem  { background:var(--terracotta-pale); border-color:rgba(196,107,69,.25); }
+  .cc-card.solution { background:var(--sage-pale);       border-color:rgba(92,122,95,.25); }
+  .cc-card.buffer   { background:var(--indigo-pale);     border-color:rgba(74,78,154,.2); }
+  .cc-icon { font-size:1.15rem; margin-bottom:.45rem; }
+  .cc-card h4 { font-size:.82rem; font-weight:600; margin-bottom:.45rem; }
+  .cc-card.problem h4  { color:var(--terracotta); }
+  .cc-card.solution h4 { color:var(--sage); }
+  .cc-card.buffer h4   { color:var(--indigo); }
+  .cc-card p { font-size:.78rem; color:var(--text-mid); line-height:1.6; }
+  .recommended-fund { background:var(--bark); border-radius:var(--radius-sm); padding:1.5rem; color:var(--cream); }
+  .rf-label { font-size:.73rem; color:rgba(250,247,242,.6); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.2rem; }
+  .rf-amount { font-family:'Playfair Display',serif; font-size:2.1rem; color:var(--amber-light); font-weight:700; margin-bottom:.9rem; }
+  .rf-includes { display:flex; flex-direction:column; gap:6px; }
+  .rf-item { font-size:.81rem; color:rgba(250,247,242,.8); display:flex; align-items:flex-start; gap:8px; }
+  .rf-item::before { content:'✔'; color:var(--sage-light); font-weight:700; flex-shrink:0; }
+
+  .generate-btn { width:100%; background:var(--bark); color:var(--cream); border:none; padding:16px; border-radius:40px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; margin-top:.5rem; transition:background .2s,transform .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .generate-btn:hover { background:var(--bark-light); transform:translateY(-1px); }
+  .generate-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+  .loading-state { text-align:center; padding:3rem 2rem; display:none; }
+  .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--amber); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 1rem; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-state p { color:var(--text-mid); font-size:.89rem; }
+  .doc-output { display:none; background:var(--warm-white); border-radius:var(--radius); border:2px solid var(--sage-light); padding:2.5rem; margin-top:1.5rem; position:relative; }
+  .doc-output .doc-badge { position:absolute; top:-12px; left:24px; background:var(--sage); color:#fff; font-size:.7rem; font-weight:600; padding:4px 14px; border-radius:20px; letter-spacing:.04em; text-transform:uppercase; }
+  .doc-output h4 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--bark); margin-bottom:.9rem; text-align:center; border-bottom:1px solid var(--border); padding-bottom:.9rem; }
+  .doc-content { font-size:.865rem; line-height:1.8; color:var(--text-main); white-space:pre-wrap; }
+  .doc-actions { display:flex; gap:.9rem; margin-top:1.5rem; flex-wrap:wrap; }
+  .btn-download { flex:1; background:var(--sage);     color:#fff; border:none; padding:12px; border-radius:40px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.855rem; cursor:pointer; min-width:110px; }
+  .btn-notarize { flex:1; background:var(--amber);    color:#fff; border:none; padding:12px; border-radius:40px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.855rem; cursor:pointer; min-width:110px; }
+  .btn-legal    { flex:1; background:var(--indigo);   color:#fff; border:none; padding:12px; border-radius:40px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.855rem; cursor:pointer; min-width:110px; }
+
+  /* PRICING */
+  .pricing-container { max-width:880px; margin:0 auto; padding:3rem 2rem; }
+  .pricing-header { text-align:center; margin-bottom:2.75rem; }
+  .pricing-header h2 { font-family:'Playfair Display',serif; font-size:2.1rem; color:var(--bark); margin-bottom:.45rem; }
+  .pricing-header p { color:var(--text-mid); }
+  .pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; margin-bottom:2.75rem; }
+  .plan-card { background:var(--warm-white); border-radius:var(--radius); border:1.5px solid var(--border); padding:1.9rem; position:relative; }
+  .plan-card.featured { border-color:var(--amber); background:var(--amber-pale); }
+  .featured-badge { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--amber); color:#fff; font-size:.7rem; font-weight:600; padding:4px 16px; border-radius:20px; white-space:nowrap; }
+  .plan-name { font-size:.73rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--text-light); margin-bottom:.45rem; }
+  .plan-price { font-family:'Playfair Display',serif; font-size:2.7rem; font-weight:700; color:var(--bark); line-height:1; margin-bottom:.2rem; }
+  .plan-price .suffix { font-size:.97rem; font-family:'DM Sans',sans-serif; color:var(--text-light); }
+  .plan-sub { font-size:.79rem; color:var(--text-light); margin-bottom:1.4rem; }
+  .plan-features { list-style:none; margin-bottom:1.75rem; }
+  .plan-features li { font-size:.855rem; color:var(--text-mid); padding:5px 0; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:8px; }
+  .plan-features li:last-child { border-bottom:none; }
+  .check { color:var(--sage); font-weight:700; flex-shrink:0; }
+  .plan-btn { width:100%; padding:13px; border-radius:40px; font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:600; cursor:pointer; border:none; transition:all .2s; }
+  .plan-btn.bark  { background:var(--bark);  color:var(--cream); }
+  .plan-btn.amber { background:var(--amber); color:#fff; }
+  .plan-btn:hover { opacity:.9; transform:translateY(-1px); }
+  .faq-section h3 { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--bark); margin-bottom:.9rem; }
+  .faq-item { border-bottom:1px solid var(--border); padding:.9rem 0; }
+  .faq-q { font-size:.88rem; font-weight:500; color:var(--text-main); cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+  .faq-a { font-size:.835rem; color:var(--text-mid); line-height:1.65; margin-top:.45rem; display:none; }
+  .faq-item.open .faq-a { display:block; }
+  .faq-arrow { transition:transform .2s; }
+  .faq-item.open .faq-arrow { transform:rotate(180deg); }
+
+  /* CAREGIVER */
+  .caregiver-container { max-width:1000px; margin:0 auto; padding:3rem 2rem; }
+  .caregiver-header { margin-bottom:2.25rem; }
+  .caregiver-header h2 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--bark); margin-bottom:.45rem; }
+  .caregiver-header p { color:var(--text-mid); font-size:.93rem; }
+  .filter-bar { background:var(--warm-white); border-radius:var(--radius); border:1px solid var(--border); padding:1.15rem 1.4rem; display:flex; gap:.9rem; align-items:center; flex-wrap:wrap; margin-bottom:1.75rem; }
+  .filter-bar label { font-size:.79rem; color:var(--text-light); margin:0; }
+  .filter-bar select { width:auto; font-size:.83rem; padding:7px 12px; background:var(--cream); }
+  .filter-tag { display:inline-flex; align-items:center; gap:5px; background:var(--sage-pale); color:var(--sage); font-size:.73rem; font-weight:600; padding:5px 12px; border-radius:20px; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; transition:background .2s; }
+  .filter-tag.active,.filter-tag:hover { background:var(--sage-light); color:#fff; }
+  .caregiver-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.15rem; }
+  .cg-card { background:var(--warm-white); border-radius:var(--radius); border:1px solid var(--border); padding:1.4rem; transition:box-shadow .2s,transform .2s; cursor:pointer; }
+  .cg-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
+  .cg-top { display:flex; align-items:center; gap:11px; margin-bottom:.9rem; }
+  .cg-avatar { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; flex-shrink:0; }
+  .cg-name { font-size:.93rem; font-weight:600; color:var(--bark); }
+  .cg-location { font-size:.755rem; color:var(--text-light); margin-top:2px; }
+  .cg-tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:.9rem; }
+  .cg-tag { font-size:.69rem; font-weight:500; padding:3px 9px; border-radius:20px; }
+  .tag-dog    { background:var(--amber-pale);     color:var(--terracotta); }
+  .tag-cat    { background:var(--terracotta-pale); color:var(--terracotta); }
+  .tag-senior { background:var(--sage-pale);       color:var(--sage); }
+  .cg-rate { font-size:.855rem; color:var(--text-mid); margin-bottom:.9rem; }
+  .cg-rate strong { color:var(--bark); }
+  .cg-rating { display:flex; align-items:center; gap:4px; font-size:.78rem; color:var(--amber); margin-bottom:.9rem; }
+  .cg-rating .count { color:var(--text-light); }
+  .cg-bio { font-size:.78rem; color:var(--text-mid); line-height:1.6; margin-bottom:.9rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .btn-contact { width:100%; background:var(--bark); color:var(--cream); border:none; padding:9px; border-radius:40px; font-family:'DM Sans',sans-serif; font-size:.79rem; font-weight:600; cursor:pointer; transition:background .2s; }
+  .btn-contact:hover { background:var(--bark-light); }
+
+  /* LEGAL */
+  .legal-container { max-width:880px; margin:0 auto; padding:3rem 2rem; }
+  .legal-hero { background:linear-gradient(135deg,var(--indigo) 0%,#2E316A 100%); border-radius:var(--radius); padding:2.75rem; color:#fff; margin-bottom:2.25rem; position:relative; overflow:hidden; }
+  .legal-hero::after { content:'⚖'; position:absolute; right:2rem; top:50%; transform:translateY(-50%); font-size:6rem; opacity:.07; }
+  .legal-hero .lh-badge { display:inline-block; background:rgba(255,255,255,.15); font-size:.7rem; font-weight:600; padding:4px 12px; border-radius:20px; letter-spacing:.06em; text-transform:uppercase; margin-bottom:.9rem; color:rgba(255,255,255,.9); }
+  .legal-hero h2 { font-family:'Playfair Display',serif; font-size:1.95rem; margin-bottom:.7rem; }
+  .legal-hero p { font-size:.93rem; color:rgba(255,255,255,.75); line-height:1.65; max-width:500px; }
+  .legal-steps { display:grid; grid-template-columns:1fr 1fr; gap:1.15rem; margin-bottom:2.25rem; }
+  .legal-step-card { background:var(--warm-white); border-radius:var(--radius); border:1px solid var(--border); padding:1.65rem; }
+  .ls-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.05rem; margin-bottom:.9rem; }
+  .ls-icon.purple { background:var(--indigo-pale); }
+  .ls-icon.amber  { background:var(--amber-pale); }
+  .ls-icon.sage   { background:var(--sage-pale); }
+  .ls-icon.terra  { background:var(--terracotta-pale); }
+  .legal-step-card h3 { font-size:.93rem; font-weight:600; color:var(--bark); margin-bottom:.45rem; }
+  .legal-step-card p  { font-size:.835rem; color:var(--text-mid); line-height:1.65; }
+  .legal-step-card .ls-num { font-size:.69rem; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.45rem; }
+  .notarize-cta { background:var(--bark); border-radius:var(--radius); padding:2.25rem 2.5rem; color:var(--cream); display:flex; align-items:center; justify-content:space-between; gap:1.75rem; flex-wrap:wrap; margin-bottom:2.25rem; }
+  .notarize-cta h3 { font-family:'Playfair Display',serif; font-size:1.45rem; margin-bottom:.45rem; }
+  .notarize-cta p { font-size:.855rem; color:rgba(250,247,242,.7); line-height:1.6; }
+  .notarize-btn { background:var(--amber); color:#fff; border:none; padding:13px 26px; border-radius:40px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:.88rem; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:opacity .2s; }
+  .notarize-btn:hover { opacity:.9; }
+  .state-compliance h3 { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--bark); margin-bottom:.7rem; }
+  .state-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.7rem; margin-top:1.1rem; }
+  .state-pill { background:var(--warm-white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.7rem; text-align:center; }
+  .state-pill .s-name   { font-weight:600; color:var(--bark); display:block; font-size:.82rem; }
+  .state-pill .s-status { font-size:.69rem; color:var(--sage); margin-top:2px; display:block; }
+  .state-pill .s-soon   { font-size:.69rem; color:var(--text-light); margin-top:2px; display:block; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; z-index:200; background:rgba(42,31,23,.5); align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--warm-white); border-radius:var(--radius); padding:2rem; max-width:475px; width:100%; position:relative; animation:slideUp .25s ease; }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .modal-close { position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-light); }
+  .modal h3 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--bark); margin-bottom:.9rem; }
+  .modal p { font-size:.855rem; color:var(--text-mid); line-height:1.65; margin-bottom:1.4rem; }
+  .modal-actions { display:flex; gap:.7rem; }
+  .toast { position:fixed; bottom:24px; right:24px; z-index:300; background:var(--sage); color:#fff; padding:13px 19px; border-radius:var(--radius-sm); font-size:.855rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.15); transform:translateY(80px); opacity:0; transition:all .3s ease; max-width:320px; }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  @media(max-width:768px){
+    .hero,.pricing-grid,.legal-steps { grid-template-columns:1fr; }
+    .hero-visual,.stats-inner { display:none; }
+    .steps,.continuity-cards { grid-template-columns:1fr; }
+    .caregiver-grid { grid-template-columns:1fr 1fr; }
+    .pet-row { grid-template-columns:1fr 1fr; }
+    .form-grid { grid-template-columns:1fr; }
+    .state-grid { grid-template-columns:repeat(2,1fr); }
+    .calc-breakdown { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">🐾 PawLegacy</div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('trust')">Create Trust</a>
+    <a onclick="showPage('pricing')">Pricing</a>
+    <a onclick="showPage('caregiver')">Caregivers</a>
+    <a onclick="showPage('legal')">Legal &amp; Notarization</a>
+    <a class="nav-cta" onclick="showPage('trust')">Get Started</a>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-badge">🛡️ Legal Pet Protection</div>
+      <h1>Give your pet a <em>protected</em> future — even after you're gone.</h1>
+      <p>PawLegacy creates legally binding pet trusts in minutes — online, affordable, and built for pet owners like you. No attorney needed.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('trust')">Create My Pet Trust</button>
+        <button class="btn-secondary" onclick="showPage('pricing')">View Plans</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-stat-row">
+        <div class="hero-stat"><div class="num">500K+</div><div class="label">Pets left without care yearly</div></div>
+        <div class="hero-stat"><div class="num">&lt;1%</div><div class="label">Of owners have a pet trust</div></div>
+      </div>
+      <div class="hero-doc-preview">
+        <div style="font-size:.7rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Generated Pet Trust Document</div>
+        <div class="doc-line"></div><div class="doc-line short"></div><div class="doc-line amber"></div>
+        <div class="doc-line" style="width:80%"></div><div class="doc-line short"></div>
+        <div class="doc-tag">✓ State-Compliant</div>
+        <div class="doc-tag" style="margin-left:6px;background:var(--amber-pale);color:var(--terracotta)">AI-Generated</div>
+      </div>
+    </div>
+  </section>
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="strip-stat"><div class="n">$149</div><div class="l">One-time vs. $500–$3,000 attorney fees</div></div>
+      <div class="strip-stat"><div class="n">~5 min</div><div class="l">To create a complete, attorney-grade trust</div></div>
+      <div class="strip-stat"><div class="n">50 states</div><div class="l">Pet trusts recognized nationwide</div></div>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps to peace of mind</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Tell us about your pet</h3><p>Enter your pet's name, breed, age, and estimated care costs. Our calculator tells you if your fund amount is sufficient.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>We generate your trust</h3><p>Our AI builds a state-compliant pet trust with your pet's real name and your specific care details — in seconds.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Sign &amp; protect</h3><p>Complete e-notarization without leaving home. Your pet is legally protected with ongoing care continuity.</p></div>
+    </div>
+  </section>
+  <footer><strong>PawLegacy</strong> — Protecting every pet, one trust at a time. &nbsp;·&nbsp; Built at NYU Tandon &nbsp;·&nbsp; © 2026</footer>
+</div>
+
+<!-- TRUST FORM -->
+<div id="page-trust" class="page">
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Create Your Pet Trust</h2>
+      <p>Fill in the details below. The Care Cost Calculator shows if your fund is sufficient, then AI drafts the legal document with your pet's real name throughout.</p>
+    </div>
+
+    <div class="form-card">
+      <h3>Your Information</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>First Name</label><input type="text" id="owner-first" placeholder="Jane" oninput="liveDocTitle()"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="owner-last" placeholder="Smith" oninput="liveDocTitle()"></div>
+        <div class="form-group">
+          <label>State of Residence</label>
+          <select id="owner-state">
+            <option value="">Select state...</option>
+            <option>New York</option><option>California</option><option>Texas</option>
+            <option>Florida</option><option>Illinois</option><option>Washington</option>
+            <option>New Jersey</option><option>Pennsylvania</option><option>Massachusetts</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Trust Fund Amount ($)</label><input type="number" id="fund-amount" placeholder="e.g. 15000" oninput="runCalc()"></div>
+        <div class="form-group full"><label>Named Caregiver (Trustee)</label><input type="text" id="trustee" placeholder="Full name of the person who will care for your pet"></div>
+        <div class="form-group full"><label>Caregiver's Relationship to You</label><input type="text" id="trustee-rel" placeholder="e.g. sister, close friend, neighbor"></div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Your Pets</h3>
+      <div id="pet-list"></div>
+      <button class="btn-add-pet" onclick="addPet()">+ Add a pet</button>
+    </div>
+
+    <!-- CARE COST CALCULATOR -->
+    <div class="calc-card">
+      <h3>🧮 Care Cost Calculator</h3>
+      <div class="form-grid" style="gap:1rem;margin-bottom:.5rem;">
+        <div class="form-group">
+          <label>Primary pet species / breed</label>
+          <select id="calc-species" onchange="runCalc()">
+            <option value="">Select species...</option>
+            <option value="golden">Golden Retriever</option>
+            <option value="labrador">Labrador</option>
+            <option value="smalldog">Small Dog (Chihuahua, Poodle…)</option>
+            <option value="cat">Cat</option>
+            <option value="rabbit">Rabbit</option>
+            <option value="bird">Bird / Parrot</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pet's current age (years)</label>
+          <input type="number" id="calc-age" placeholder="e.g. 4" min="0" max="25" oninput="runCalc()">
+        </div>
+      </div>
+      <div class="calc-result" id="calc-result">
+        <div class="calc-verdict" id="calc-verdict"></div>
+        <div class="calc-breakdown" id="calc-breakdown"></div>
+        <div id="calc-status-badge"></div>
+        <div class="calc-suggestion" id="calc-suggestion"></div>
+      </div>
+    </div>
+
+    <!-- CARE CONTINUITY PLAN -->
+    <div class="continuity-section" id="continuity-section">
+      <div class="continuity-badge">Care Continuity Plan</div>
+      <p class="continuity-intro">Pet insurance often ends when the owner passes away. PawLegacy ensures continuous care funding beyond insurance limitations.</p>
+      <div class="continuity-cards">
+        <div class="cc-card problem">
+          <div class="cc-icon">⚠️</div>
+          <h4>Insurance Gap</h4>
+          <p>Pet insurance does not transfer automatically after the owner's death. Coverage may be lost exactly when it's needed most.</p>
+        </div>
+        <div class="cc-card solution">
+          <div class="cc-icon">🛡️</div>
+          <h4>Trust Coverage</h4>
+          <p>Your pet trust fund ensures medical, food, and long-term care costs are always covered — even without insurance.</p>
+        </div>
+        <div class="cc-card buffer">
+          <div class="cc-icon">💰</div>
+          <h4>Emergency Buffer</h4>
+          <p>Built-in contingency funds handle unexpected surgeries, chronic conditions, and aging-related care needs.</p>
+        </div>
+      </div>
+      <div class="recommended-fund">
+        <div class="rf-label">Recommended Trust Fund</div>
+        <div class="rf-amount" id="rf-amount">—</div>
+        <div class="rf-includes">
+          <div class="rf-item">Lifetime care cost &nbsp;<span id="rf-lifetime" style="color:var(--amber-light)"></span></div>
+          <div class="rf-item">Medical contingency buffer &nbsp;<span id="rf-buffer" style="color:var(--amber-light)"></span></div>
+          <div class="rf-item">Insurance gap coverage &nbsp;<span id="rf-gap" style="color:var(--amber-light)"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card" style="margin-top:1.4rem;">
+      <h3>Care Instructions</h3>
+      <div class="form-grid">
+        <div class="form-group full"><label>Dietary needs &amp; feeding schedule</label><textarea id="care-diet" placeholder="e.g. Grain-free dry food twice daily, ½ cup each time. No table scraps."></textarea></div>
+        <div class="form-group full"><label>Veterinarian &amp; medical notes</label><textarea id="care-vet" placeholder="e.g. Dr. Sarah Kim at Riverside Animal Clinic, 212-555-0192. Annual vaccines due in March."></textarea></div>
+        <div class="form-group full"><label>Special wishes or notes</label><textarea id="care-special" placeholder="e.g. Buddy loves his blue blanket and a 30-min walk every evening. Please keep him indoors."></textarea></div>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="gen-btn" onclick="generateTrust()">✨ Generate My Pet Trust</button>
+    <div class="loading-state" id="loading-state">
+      <div class="spinner"></div>
+      <p>Our AI is drafting your personalized pet trust document…</p>
+    </div>
+
+    <div class="doc-output" id="doc-output">
+      <div class="doc-badge">✓ AI-Generated Draft</div>
+      <h4 id="doc-title">Pet Trust Agreement</h4>
+      <div class="doc-content" id="doc-content"></div>
+      <div class="doc-actions">
+        <button class="btn-download"  onclick="downloadDoc()">⬇ Download</button>
+        <button class="btn-notarize" onclick="showToast('E-notarization portal launching soon — join the waitlist!')">📋 E-Notarize</button>
+        <button class="btn-legal"    onclick="showPage('legal')">⚖ Legal Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="page-pricing" class="page">
+  <div class="pricing-container">
+    <div class="pricing-header">
+      <h2>Simple, transparent pricing</h2>
+      <p>No hidden fees. Cancel anytime. Your pet deserves the best.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Basic</div>
+        <div class="plan-price">$149 <span class="suffix">one-time</span></div>
+        <div class="plan-sub">Everything you need to get started</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> AI-generated state-compliant pet trust</li>
+          <li><span class="check">✓</span> Care Cost Calculator</li>
+          <li><span class="check">✓</span> E-notarization integration</li>
+          <li><span class="check">✓</span> Cloud storage &amp; downloadable PDF</li>
+          <li><span class="check">✓</span> Up to 3 pets per trust</li>
+          <li><span class="check">✓</span> Caregiver designation</li>
+          <li><span class="check">✓</span> Email support</li>
+        </ul>
+        <button class="plan-btn bark" onclick="showPage('trust')">Get Started</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="plan-name">Premium Plus</div>
+        <div class="plan-price">$9.99 <span class="suffix">/ month</span></div>
+        <div class="plan-sub">Or $99/year · Includes Basic plan</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Basic</li>
+          <li><span class="check">✓</span> Auto trust activation protocols</li>
+          <li><span class="check">✓</span> Expense tracking &amp; fund monitoring</li>
+          <li><span class="check">✓</span> Legacy Capsule (videos, photos, letters)</li>
+          <li><span class="check">✓</span> Caregiver matching service</li>
+          <li><span class="check">✓</span> Legal template auto-updates</li>
+          <li><span class="check">✓</span> Care Continuity Plan</li>
+          <li><span class="check">✓</span> Priority 24/7 support</li>
+        </ul>
+        <button class="plan-btn amber" onclick="showPage('trust')">Start Free Trial</button>
+      </div>
+    </div>
+    <div class="faq-section">
+      <h3>Frequently asked questions</h3>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is a pet trust actually legally binding? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes — pet trusts are legally recognized in all 50 U.S. states. They are the only legally enforceable way to leave funds specifically for your pet's care. PawLegacy generates documents that meet your state's specific requirements.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Do I need an attorney to use PawLegacy? <span class="faq-arrow">▾</span></div><div class="faq-a">No. Our platform automates the legal drafting process. We recommend having a personal attorney review the document if you have a complex estate, but it's not required for most pet owners.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What happens to the trust funds? <span class="faq-arrow">▾</span></div><div class="faq-a">Funds are held by a professional trust company partner. When the trust is activated, the designated caregiver receives regular disbursements according to the care plan you defined.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can I update my trust after creating it? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes — Premium Plus subscribers get automatic legal updates and can modify their trust document anytime through the platform dashboard.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAREGIVERS -->
+<div id="page-caregiver" class="page">
+  <div class="caregiver-container">
+    <div class="caregiver-header">
+      <h2>Find a Trusted Caregiver</h2>
+      <p>All caregivers are background-checked, reviewed by the PawLegacy community, and experienced with long-term pet care commitments.</p>
+    </div>
+    <div class="filter-bar">
+      <label>Pet type:</label>
+      <button class="filter-tag active" onclick="filterCG(this,'all')">All</button>
+      <button class="filter-tag" onclick="filterCG(this,'dog')">Dogs</button>
+      <button class="filter-tag" onclick="filterCG(this,'cat')">Cats</button>
+      <button class="filter-tag" onclick="filterCG(this,'senior')">Senior Pets</button>
+      <label style="margin-left:auto">Sort by:</label>
+      <select onchange="sortCG(this.value)">
+        <option value="rating">Highest Rated</option>
+        <option value="rate">Lowest Rate</option>
+        <option value="reviews">Most Reviews</option>
+      </select>
+    </div>
+    <div class="caregiver-grid" id="cg-grid"></div>
+  </div>
+</div>
+
+<!-- LEGAL & NOTARIZATION -->
+<div id="page-legal" class="page">
+  <div class="legal-container">
+    <div class="legal-hero">
+      <div class="lh-badge">Legal Review &amp; Notarization</div>
+      <h2>Your trust, legally airtight.</h2>
+      <p>Every PawLegacy document is AI-drafted to state-specific standards. Follow our guided review process to ensure your trust is valid, signed, and enforceable.</p>
+    </div>
+    <div class="legal-steps">
+      <div class="legal-step-card">
+        <div class="ls-num">Step 1</div>
+        <div class="ls-icon purple">📄</div>
+        <h3>AI Document Review</h3>
+        <p>Our AI cross-checks your trust against your state's pet trust statutes, flags missing clauses, and ensures all required provisions are included before you sign.</p>
+      </div>
+      <div class="legal-step-card">
+        <div class="ls-num">Step 2</div>
+        <div class="ls-icon amber">🔍</div>
+        <h3>Optional Attorney Review</h3>
+        <p>For complex estates, connect with a PawLegacy-vetted estate attorney for a flat-fee document review — no hourly billing surprises.</p>
+      </div>
+      <div class="legal-step-card">
+        <div class="ls-num">Step 3</div>
+        <div class="ls-icon sage">✍️</div>
+        <h3>E-Signature</h3>
+        <p>Sign your trust digitally with a legally recognized e-signature. No printing, no mailing — complete on any device in minutes.</p>
+      </div>
+      <div class="legal-step-card">
+        <div class="ls-num">Step 4</div>
+        <div class="ls-icon terra">🏛️</div>
+        <h3>Online Notarization</h3>
+        <p>Connect live with a certified notary via video — available 24/7. Your notarized trust is stored securely and delivered digitally.</p>
+      </div>
+    </div>
+    <div class="notarize-cta">
+      <div>
+        <h3>Ready to notarize your trust?</h3>
+        <p>Complete the process in 15 minutes. Notaries available around the clock. Accepted in all 50 states.</p>
+      </div>
+      <button class="notarize-btn" onclick="showToast('E-notarization portal launching soon — join the waitlist!')">Begin Notarization →</button>
+    </div>
+    <div class="state-compliance">
+      <h3>State compliance coverage</h3>
+      <p style="font-size:.855rem;color:var(--text-mid)">PawLegacy templates are validated against pet trust statutes in each supported state.</p>
+      <div class="state-grid">
+        <div class="state-pill"><span class="s-name">New York</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">California</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Texas</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Florida</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Illinois</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Washington</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">New Jersey</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Massachusetts</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Pennsylvania</span><span class="s-status">✓ Supported</span></div>
+        <div class="state-pill"><span class="s-name">Colorado</span><span class="s-soon">Coming soon</span></div>
+        <div class="state-pill"><span class="s-name">Georgia</span><span class="s-soon">Coming soon</span></div>
+        <div class="state-pill"><span class="s-name">Arizona</span><span class="s-soon">Coming soon</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <h3 id="modal-name"></h3>
+    <p id="modal-bio-full"></p>
+    <p id="modal-details" style="font-size:.79rem;color:var(--text-light);margin-top:-1rem;margin-bottom:1.4rem;"></p>
+    <div class="modal-actions">
+      <button class="btn-primary" style="flex:1" onclick="showToast('Request sent! The caregiver will contact you within 24 hours.'); document.getElementById('modal').classList.remove('open')">Send Request</button>
+      <button class="btn-secondary" style="flex:1" onclick="document.getElementById('modal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// NAV
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// PETS
+let pets = [];
+function addPet() {
+  const id = Date.now();
+  pets.push(id);
+  const div = document.createElement('div');
+  div.className = 'pet-row';
+  div.id = 'pet-' + id;
+  div.innerHTML = `
+    <div class="form-group"><label>Pet Name</label><input type="text" placeholder="e.g. 초코" class="pet-name" oninput="runCalc()"></div>
+    <div class="form-group"><label>Species / Breed</label><input type="text" placeholder="e.g. Golden Retriever" class="pet-breed"></div>
+    <div class="form-group"><label>Age (years)</label><input type="number" placeholder="e.g. 4" class="pet-age" min="0" max="30"></div>
+    <button class="btn-remove" onclick="removePet(${id})">✕</button>`;
+  document.getElementById('pet-list').appendChild(div);
+}
+function removePet(id) {
+  const el = document.getElementById('pet-' + id);
+  if (el) el.remove();
+  pets = pets.filter(p => p !== id);
+}
+addPet();
+
+// LIVE DOC TITLE
+function liveDocTitle() {
+  const first = document.getElementById('owner-first').value;
+  const last  = document.getElementById('owner-last').value;
+  const title = document.getElementById('doc-title');
+  if (title && (first || last)) {
+    title.textContent = `Pet Trust Agreement — ${first} ${last}`.trim();
+  }
+}
+
+// CARE COST CALCULATOR
+const SPECIES_DATA = {
+  golden:   { name:'Golden Retriever', lifespan:12, food:80,  vet:120 },
+  labrador: { name:'Labrador',         lifespan:12, food:75,  vet:110 },
+  smalldog: { name:'Small Dog',        lifespan:16, food:45,  vet:80  },
+  cat:      { name:'Cat',              lifespan:15, food:40,  vet:60  },
+  rabbit:   { name:'Rabbit',           lifespan:10, food:30,  vet:50  },
+  bird:     { name:'Bird / Parrot',    lifespan:25, food:35,  vet:70  },
+};
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function runCalc() {
+  const species = document.getElementById('calc-species').value;
+  const calcAge = parseFloat(document.getElementById('calc-age').value);
+  const fundAmt = parseFloat(document.getElementById('fund-amount').value) || 0;
+
+  if (!species) return;
+  const sd = SPECIES_DATA[species];
+
+  // use pet-row age if calc-age is blank
+  const age = isNaN(calcAge) ? 0 : calcAge;
+  const remaining = Math.max(sd.lifespan - age, 0.5);
+  const months    = remaining * 12;
+
+  const lifetime  = Math.round((sd.food + sd.vet) * months);
+  const buffer    = Math.round(lifetime * 0.20);
+  const gap       = Math.round(lifetime * 0.10);
+  const total     = lifetime + buffer + gap;
+
+  // pet name
+  const firstPetName = (document.querySelector('.pet-name')?.value?.trim()) || sd.name;
+  const yrsWord = remaining <= 1 ? 'year' : 'years';
+
+  const resultEl   = document.getElementById('calc-result');
+  const verdictEl  = document.getElementById('calc-verdict');
+  const breakdownEl = document.getElementById('calc-breakdown');
+  const statusEl   = document.getElementById('calc-status-badge');
+  const suggestEl  = document.getElementById('calc-suggestion');
+
+  resultEl.classList.add('visible');
+
+  if (fundAmt) {
+    const yrsCovered = (fundAmt / ((sd.food + sd.vet) * 12)).toFixed(1);
+    verdictEl.innerHTML = `<span class="verdict-amt">${fmt(fundAmt)}</span> covers approximately <strong>${yrsCovered} years</strong> of care for <strong>${firstPetName}</strong> — out of an estimated <strong>${Math.round(remaining)} ${yrsWord}</strong> remaining (${sd.name}, avg. ${sd.lifespan}-yr lifespan).`;
+  } else {
+    verdictEl.innerHTML = `<strong>${firstPetName}</strong> (${sd.name}) has an estimated <strong>${Math.round(remaining)} ${yrsWord}</strong> of life remaining. Enter a trust fund amount above to see if it covers the full lifetime.`;
+  }
+
+  breakdownEl.innerHTML = `
+    <div class="calc-breakdown-item"><strong>${fmt(sd.food * months)}</strong>Food &amp; supplies</div>
+    <div class="calc-breakdown-item"><strong>${fmt(sd.vet * months)}</strong>Vet &amp; medical</div>
+    <div class="calc-breakdown-item"><strong>${fmt(buffer)}</strong>Emergency buffer (+20%)</div>
+    <div class="calc-breakdown-item"><strong>${fmt(gap)}</strong>Insurance gap (+10%)</div>`;
+
+  if (fundAmt) {
+    const ratio = fundAmt / total;
+    let cls, txt, msg;
+    if (ratio >= 1) {
+      cls = 'ok'; txt = '✓ Fully funded';
+      msg = `Great news! ${fmt(fundAmt)} fully covers ${firstPetName}'s estimated lifetime needs of ${fmt(total)} — with room to spare.`;
+    } else if (ratio >= 0.7) {
+      cls = 'warn'; txt = '⚠ Partially funded';
+      msg = `Consider adding ${fmt(total - fundAmt)} more to fully cover ${firstPetName}'s lifetime care, medical emergencies, and insurance gaps.`;
+    } else {
+      cls = 'low'; txt = '✗ Underfunded';
+      msg = `${fmt(fundAmt)} may not be sufficient for ${firstPetName}'s ${Math.round(remaining)}-year care. We recommend at least ${fmt(total)} — consider a life insurance payout or annual contributions.`;
+    }
+    statusEl.innerHTML = `<span class="calc-status ${cls}">${txt}</span>`;
+    suggestEl.textContent = msg;
+  } else {
+    statusEl.innerHTML = '';
+    suggestEl.textContent = '';
+  }
+
+  // Care Continuity
+  document.getElementById('continuity-section').classList.add('visible');
+  document.getElementById('rf-amount').textContent  = fmt(total);
+  document.getElementById('rf-lifetime').textContent = fmt(lifetime);
+  document.getElementById('rf-buffer').textContent   = fmt(buffer);
+  document.getElementById('rf-gap').textContent      = fmt(gap);
+}
+
+// GENERATE TRUST (AI)
+async function generateTrust() {
+  const first   = document.getElementById('owner-first').value.trim();
+  const last    = document.getElementById('owner-last').value.trim();
+  const state   = document.getElementById('owner-state').value;
+  const fundAmt = document.getElementById('fund-amount').value;
+  const trustee = document.getElementById('trustee').value.trim();
+  const rel     = document.getElementById('trustee-rel').value.trim();
+  const diet    = document.getElementById('care-diet').value.trim();
+  const vet     = document.getElementById('care-vet').value.trim();
+  const special = document.getElementById('care-special').value.trim();
+
+  if (!first || !last || !state || !trustee) {
+    showToast('Please fill in your name, state, and caregiver name.');
+    return;
+  }
+  const petRows = document.querySelectorAll('.pet-row');
+  if (!petRows.length) { showToast('Please add at least one pet.'); return; }
+
+  let petsText = '', petNames = [];
+  petRows.forEach((row, i) => {
+    const n = row.querySelector('.pet-name').value  || `Pet ${i+1}`;
+    const b = row.querySelector('.pet-breed').value || 'Mixed breed';
+    const a = row.querySelector('.pet-age').value   || 'unknown age';
+    petsText += `\n- ${n} (${b}, ${a} years old)`;
+    petNames.push(n);
+  });
+
+  const fund      = fundAmt ? `$${Number(fundAmt).toLocaleString()}` : 'to be determined';
+  const petStr    = petNames.join(' and ');
+  const today     = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('loading-state').style.display = 'block';
+  document.getElementById('doc-output').style.display = 'none';
+
+  const prompt = `Generate a complete, formal Pet Trust Agreement. Use the REAL names and amounts throughout — never use placeholder brackets.
+
+Date: ${today}
+Grantor: ${first} ${last}
+State: ${state}
+Trust Fund: ${fund}
+Trustee: ${trustee} (${rel || 'designated caregiver'})
+Pets:${petsText}
+Dietary Care: ${diet || 'Standard veterinarian-recommended care'}
+Veterinary: ${vet || 'To be designated by owner'}
+Special Instructions: ${special || 'None specified'}
+
+Write in formal legal language. Use "${first} ${last}", "${trustee}", and "${petStr}" by name throughout. Include these sections:
+1. DECLARATION AND PURPOSE
+2. IDENTIFICATION OF PETS — describe each pet by name and breed
+3. APPOINTMENT AND DUTIES OF TRUSTEE — name ${trustee} specifically
+4. TRUST FUNDING AND DISTRIBUTION — reference ${fund}
+5. SPECIFIC CARE INSTRUCTIONS
+6. TRUSTEE COMPENSATION
+7. TRUST TERMINATION
+8. GOVERNING LAW — cite ${state} statutes
+9. SIGNATURE BLOCKS for both ${first} ${last} and ${trustee}
+
+Approximately 600 words.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Error generating document. Please try again.';
+    document.getElementById('doc-content').textContent = text;
+    document.getElementById('doc-title').textContent = `Pet Trust Agreement — ${first} ${last}`;
+    document.getElementById('doc-output').style.display = 'block';
+    document.getElementById('doc-output').scrollIntoView({behavior:'smooth',block:'start'});
+    showToast(`Trust document for ${petStr} generated successfully!`);
+  } catch(e) {
+    showToast('Generation failed. Please check your connection and try again.');
+  } finally {
+    document.getElementById('loading-state').style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+// DOWNLOAD
+function downloadDoc() {
+  const first = document.getElementById('owner-first').value || 'owner';
+  const content = document.getElementById('doc-content').textContent;
+  const blob = new Blob([content], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `PawLegacy_Trust_${first}.txt`;
+  a.click();
+  showToast('Document downloaded!');
+}
+
+// UTILS
+function toggleFaq(el) { el.classList.toggle('open'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3800);
+}
+function closeModal(e) { if(e.target.id==='modal') document.getElementById('modal').classList.remove('open'); }
+
+// CAREGIVERS
+const caregivers = [
+  {id:1,name:'Emily Chen',  initials:'EC',color:'#5C7A5F',colorBg:'#EBF2EC',location:'Brooklyn, NY', tags:['dog','cat','senior'],rate:85,rating:4.9,reviews:47,bio:'Certified veterinary technician with 8 years of experience in senior and special-needs pet care. Available for long-term trust arrangements.'},
+  {id:2,name:'Marcus Rivera',initials:'MR',color:'#E8A045',colorBg:'#FDF3E3',location:'Manhattan, NY',tags:['dog'],              rate:70,rating:4.7,reviews:31,bio:'Former shelter manager. Specializes in large breeds and active dogs. Fully insured and CPR-certified for animals.'},
+  {id:3,name:'Priya Nair',  initials:'PN',color:'#C46B45',colorBg:'#F7EAE4',location:'Queens, NY',   tags:['cat','senior'],      rate:60,rating:4.8,reviews:55,bio:'Cat behavior specialist and retired vet technician. Passionate about providing dignified, loving care for senior cats.'},
+  {id:4,name:'Tom Okafor',  initials:'TO',color:'#534AB7',colorBg:'#EEEDFE',location:'Hoboken, NJ',  tags:['dog','cat'],         rate:75,rating:4.6,reviews:22,bio:'Animal science graduate. Experience with multi-pet households. References available from 3 current PawLegacy trust arrangements.'},
+  {id:5,name:'Sarah Kim',   initials:'SK',color:'#3D2B1F',colorBg:'#FAF7F2',location:'Astoria, NY',  tags:['senior','dog'],      rate:90,rating:5.0,reviews:18,bio:'Specialized in palliative and senior pet care. A registered vet nurse offering premium, compassionate long-term commitment.'},
+  {id:6,name:'Jordan Lee',  initials:'JL',color:'#185FA5',colorBg:'#E6F1FB',location:'Jersey City, NJ',tags:['cat','dog'],       rate:65,rating:4.5,reviews:38,bio:'Lifelong animal lover, 5+ years of professional pet sitting. Bonded and insured. Flexible schedule for trust care needs.'},
+];
+
+let currentFilter = 'all';
+function renderCaregivers(list) {
+  const grid = document.getElementById('cg-grid');
+  grid.innerHTML = '';
+  list.forEach(cg => {
+    const stars = '★'.repeat(Math.floor(cg.rating)) + (cg.rating%1 ? '½' : '');
+    const tags  = cg.tags.map(t=>`<span class="cg-tag tag-${t}">${t==='senior'?'Senior Pets':t==='dog'?'Dogs':'Cats'}</span>`).join('');
+    const card  = document.createElement('div');
+    card.className = 'cg-card';
+    card.onclick = () => openModal(cg);
+    card.innerHTML = `
+      <div class="cg-top">
+        <div class="cg-avatar" style="background:${cg.colorBg};color:${cg.color}">${cg.initials}</div>
+        <div><div class="cg-name">${cg.name}</div><div class="cg-location">📍 ${cg.location}</div></div>
+      </div>
+      <div class="cg-tags">${tags}</div>
+      <div class="cg-rating">${stars} <span class="count">(${cg.reviews} reviews)</span></div>
+      <div class="cg-rate">From <strong>$${cg.rate}/day</strong></div>
+      <div class="cg-bio">${cg.bio}</div>
+      <button class="btn-contact">Contact ${cg.name.split(' ')[0]}</button>`;
+    grid.appendChild(card);
+  });
+}
+function filterCG(btn, type) {
+  document.querySelectorAll('.filter-tag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+function sortCG(val) { applyFilters(val); }
+function applyFilters(sort) {
+  let list = caregivers.filter(cg => currentFilter==='all' || cg.tags.includes(currentFilter));
+  const sv = sort || document.querySelector('.filter-bar select')?.value || 'rating';
+  if (sv==='rating')  list.sort((a,b)=>b.rating-a.rating);
+  if (sv==='rate')    list.sort((a,b)=>a.rate-b.rate);
+  if (sv==='reviews') list.sort((a,b)=>b.reviews-a.reviews);
+  renderCaregivers(list);
+}
+function openModal(cg) {
+  document.getElementById('modal-name').textContent = cg.name;
+  document.getElementById('modal-bio-full').textContent = cg.bio;
+  document.getElementById('modal-details').textContent = `📍 ${cg.location}  ·  $${cg.rate}/day  ·  ★ ${cg.rating} (${cg.reviews} reviews)`;
+  document.getElementById('modal').classList.add('open');
+}
+
+applyFilters();
+</script>
+</body>
+</html>
