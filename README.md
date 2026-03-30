@@ -60,4 +60,4 @@ If your default branch is `main` and you want to push there:
 ```bash
 git checkout -b main
 git push -u origin main
-``
+```
