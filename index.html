@@ -32,7 +32,7 @@
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    background: linear-gradient(180deg, #faf7f2 0%, #f7f3ee 100%);
     color: var(--text-main);
     min-height: 100vh;
   }
@@ -292,6 +292,7 @@
     border: 1px solid var(--border);
     padding: 2rem;
     margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
   }
   .form-card h3 {
     font-size: 0.8rem;
@@ -410,6 +411,7 @@
     padding: 2.5rem;
     margin-top: 1.5rem;
     position: relative;
+    box-shadow: var(--shadow);
   }
   .doc-output .doc-badge {
     position: absolute; top: -12px; left: 24px;
@@ -436,9 +438,14 @@
     line-height: 1.8;
     color: var(--text-main);
     white-space: pre-wrap;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
   }
   .doc-actions {
     display: flex; gap: 1rem; margin-top: 1.5rem;
+    flex-wrap: wrap;
   }
   .btn-download {
     flex: 1;
@@ -456,6 +463,18 @@
     flex: 1;
     background: var(--amber);
     color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  .btn-pdf {
+    flex: 1;
+    background: var(--bark-light);
+    color: #fff;
     border: none;
     padding: 12px;
     border-radius: 40px;
@@ -491,6 +510,7 @@
     border: 1.5px solid var(--border);
     padding: 2rem;
     position: relative;
+    box-shadow: var(--shadow);
   }
   .plan-card.featured {
     border-color: var(--amber);
@@ -645,6 +665,7 @@
     padding: 1.5rem;
     transition: box-shadow 0.2s, transform 0.2s;
     cursor: pointer;
+    box-shadow: var(--shadow);
   }
   .cg-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
   .cg-top { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
@@ -796,6 +817,46 @@
     margin: 0;
   }
   .checklist-list input { width: auto; }
+  .field-help {
+    font-size: 0.76rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .packet-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 2rem 3rem;
+  }
+  .packet-shell {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .packet-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--bark);
+    margin-bottom: 0.35rem;
+  }
+  .packet-desc { color: var(--text-mid); margin-bottom: 1rem; font-size: 0.92rem; }
+  .packet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .packet-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    padding: 0.85rem;
+  }
+  .packet-card h6 { font-size: 0.84rem; color: var(--bark); margin-bottom: 0.3rem; }
+  .packet-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
 
   @media (max-width: 768px) {
     .hero { grid-template-columns: 1fr; gap: 2rem; }
@@ -807,6 +868,26 @@
     .pet-row { grid-template-columns: 1fr 1fr; }
     .form-grid { grid-template-columns: 1fr; }
     .continuity-cards { grid-template-columns: 1fr; }
+    .packet-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    nav, .doc-actions, .toast, .modal-overlay, .loading-state { display: none !important; }
+    .doc-output {
+      display: block !important;
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    .doc-content {
+      border: none;
+      padding: 0;
+      white-space: pre-wrap;
+      font-size: 12pt;
+      line-height: 1.7;
+    }
+    .result-summary, #continuity-summary, .continuity-wrap { display: none !important; }
   }
 </style>
 </head>
@@ -861,6 +942,28 @@
     </div>
   </section>
 
+  <section class="packet-section">
+    <div class="packet-shell">
+      <h3 class="packet-headline">Get Our Free Pet Planning Packet</h3>
+      <p class="packet-desc">Start planning for your pet’s future before creating a full legal trust. This packet gives you practical emergency and caregiver materials you can use today.</p>
+      <div class="packet-grid">
+        <div class="packet-card">
+          <h6>Pet Alert Card</h6>
+          <p>A wallet-sized emergency card that alerts responders your pet is at home and needs immediate care.</p>
+        </div>
+        <div class="packet-card">
+          <h6>Emergency Info Sheet</h6>
+          <p>A quick-reference page for medications, vet contacts, routines, allergies, and urgent instructions.</p>
+        </div>
+        <div class="packet-card">
+          <h6>Pet Portfolio</h6>
+          <p>A structured record of habits, preferences, medical history, and care preferences for future caregivers.</p>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="downloadPlanningPacket()">Download Free Packet</button>
+    </div>
+  </section>
+
   <div class="stats-strip">
     <div class="stats-inner">
       <div class="strip-stat"><div class="n">$149</div><div class="l">One-time vs. $500–$3,000 attorney fees</div></div>
@@ -904,6 +1007,35 @@
     </div>
 
     <div class="form-card">
+      <h3>Care Cost Calculator</h3>
+      <p class="field-help" style="margin-top:-0.5rem;margin-bottom:0.8rem;">Use this estimate to choose a reasonable trust fund amount before generating your document.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Pet Type Profile</label>
+          <select id="calc-pet-type">
+            <option value="">Select species...</option>
+            <option value="golden retriever">Golden Retriever</option>
+            <option value="labrador">Labrador</option>
+            <option value="small dog">Small Dog</option>
+            <option value="cat">Cat</option>
+            <option value="rabbit">Rabbit</option>
+            <option value="bird">Bird / Parrot</option>
+            <option value="senior dog">Senior Dog</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Input Budget ($)</label>
+          <input type="number" id="calc-budget" placeholder="e.g. 5000">
+        </div>
+        <div class="form-group full">
+          <div id="calc-result" class="calc-result">
+            Enter a budget to estimate how many years of care it covers.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
       <h3>Your Information</h3>
       <div class="form-grid">
         <div class="form-group">
@@ -928,12 +1060,48 @@
           <input type="number" id="fund-amount" placeholder="e.g. 15000">
         </div>
         <div class="form-group full">
-          <label>Named Caregiver (Trustee)</label>
-          <input type="text" id="trustee" placeholder="Full name of the person who will care for your pet">
+          <label>Primary Trustee</label>
+          <input type="text" id="trustee" placeholder="Person or institution managing trust funds">
         </div>
         <div class="form-group full">
-          <label>Caregiver's Relationship to You</label>
-          <input type="text" id="trustee-rel" placeholder="e.g. sister, close friend, neighbor">
+          <label>Successor Trustee</label>
+          <input type="text" id="successor-trustee" placeholder="Backup trustee if primary trustee is unable to serve">
+        </div>
+        <div class="form-group full">
+          <label>Primary Caregiver</label>
+          <input type="text" id="primary-caregiver" placeholder="Person responsible for day-to-day pet care">
+        </div>
+        <div class="form-group full">
+          <label>Backup Caregiver</label>
+          <input type="text" id="backup-caregiver" placeholder="Alternate caregiver if primary caregiver is unavailable">
+        </div>
+        <div class="form-group full">
+          <label>Remainder Beneficiary</label>
+          <input type="text" id="remainder-beneficiary" placeholder="e.g. ASPCA, local rescue, family member">
+          <p class="field-help">Who should receive any unused trust funds after your pet passes away?</p>
+        </div>
+        <div class="form-group full">
+          <label>Care Oversight</label>
+          <label style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0;">
+            <input type="checkbox" id="oversight-enabled" style="width:auto;"> Require periodic care inspections by trustee
+          </label>
+        </div>
+        <div class="form-group full" id="oversight-frequency-group" style="display:none;">
+          <label>Inspection Frequency</label>
+          <select id="oversight-frequency">
+            <option>Monthly</option>
+            <option>Quarterly</option>
+            <option>Biannually</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Final Disposition</label>
+          <select id="final-disposition">
+            <option>Burial</option>
+            <option>Cremation</option>
+            <option>Cremation with ashes returned to family</option>
+            <option>Leave instructions later</option>
+          </select>
         </div>
       </div>
     </div>
@@ -963,29 +1131,6 @@
     </div>
 
     <div class="form-card">
-      <h3>Care Cost Calculator</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Pet Type Profile</label>
-          <select id="calc-pet-type">
-            <option value="golden retriever">Golden Retriever</option>
-            <option value="small dog">Small Dog</option>
-            <option value="cat">Cat</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Input Budget ($)</label>
-          <input type="number" id="calc-budget" placeholder="e.g. 5000">
-        </div>
-        <div class="form-group full">
-          <div id="calc-result" class="calc-result">
-            Enter a budget to estimate how many years of care it covers.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-card">
       <h3>Live Preview</h3>
       <div id="live-preview" class="live-preview">
         Draft preview will reflect your pet name and trust amount in real time.
@@ -1005,6 +1150,7 @@
       <div class="doc-badge">✓ AI-Generated Draft</div>
       <h4>Pet Trust Agreement</h4>
       <div id="result-summary" class="result-summary"></div>
+      <div id="continuity-summary" class="calc-result" style="margin-bottom:1rem;"></div>
       <div class="doc-content" id="doc-content"></div>
 
       <div class="continuity-wrap">
@@ -1027,6 +1173,7 @@
       </div>
       <div class="doc-actions">
         <button class="btn-download" onclick="downloadDoc()">⬇ Download Document</button>
+        <button class="btn-pdf" onclick="downloadPdfDoc()">🧾 Download PDF</button>
         <button class="btn-notarize" onclick="showToast('E-notarization service coming soon! Stay tuned.')">📋 Proceed to E-Notarization</button>
       </div>
     </div>
@@ -1193,8 +1340,12 @@ function showPage(id) {
 let pets = [];
 const careCostProfiles = {
   'golden retriever': { monthly: 140, lifespan: 12, label: 'Golden Retriever' },
+  'labrador': { monthly: 150, lifespan: 12, label: 'Labrador' },
   'small dog': { monthly: 95, lifespan: 14, label: 'Small Dog' },
-  'cat': { monthly: 75, lifespan: 15, label: 'Cat' }
+  'cat': { monthly: 75, lifespan: 15, label: 'Cat' },
+  'rabbit': { monthly: 60, lifespan: 10, label: 'Rabbit' },
+  'bird': { monthly: 55, lifespan: 18, label: 'Bird / Parrot' },
+  'senior dog': { monthly: 185, lifespan: 6, label: 'Senior Dog' }
 };
 
 function addPet() {
@@ -1236,9 +1387,15 @@ function updateLivePreview() {
   const petName = getPrimaryPetName();
   const amount = Number(document.getElementById('fund-amount')?.value || 0);
   const displayAmount = amount > 0 ? amount.toLocaleString() : 'TBD';
-  const trustee = document.getElementById('trustee')?.value?.trim() || 'your selected caregiver';
-  const preview = `This draft names ${petName} as the protected beneficiary and allocates $${displayAmount} for long-term care under trustee ${trustee}.`;
+  const trustee = document.getElementById('trustee')?.value?.trim() || 'your selected trustee';
+  const caregiver = document.getElementById('primary-caregiver')?.value?.trim() || 'your selected caregiver';
+  const preview = `This draft names ${petName} as beneficiary, allocates $${displayAmount}, appoints trustee ${trustee}, and designates caregiver ${caregiver}.`;
   document.getElementById('live-preview').textContent = preview;
+}
+
+function toggleOversightFrequency() {
+  const enabled = document.getElementById('oversight-enabled').checked;
+  document.getElementById('oversight-frequency-group').style.display = enabled ? 'block' : 'none';
 }
 
 function updateCareCalculator() {
@@ -1246,7 +1403,7 @@ function updateCareCalculator() {
   const budget = Number(document.getElementById('calc-budget').value || 0);
   const profile = careCostProfiles[typeKey];
   const resultEl = document.getElementById('calc-result');
-  if (!budget) {
+  if (!budget || !profile) {
     resultEl.textContent = 'Enter a budget to estimate how many years of care it covers.';
     return;
   }
@@ -1260,7 +1417,7 @@ function buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt)
   return `PET TRUST AGREEMENT (DRAFT)\n\nOwner: ${ownerFullName}\nState: ${state}\nTrustee: ${trustee}\nAllocated Trust Fund: $${Number(fundAmt || 0).toLocaleString() || 'TBD'}\n\nCovered Pet(s):\n${petsText}\n\n1. Declaration and Purpose\nThis pet trust is established to provide ongoing support for the named pet(s) after the owner's death or incapacity.\n\n2. Trustee Duties\nThe trustee shall distribute funds solely for approved pet care costs including food, routine exams, medications, and emergency care.\n\n3. Funding and Distribution\nFunds are managed in trust and released in scheduled amounts with flexibility for medical contingencies.\n\n4. Governing Law\nThis draft should be reviewed for compliance with ${state} pet trust statutes before execution.\n\n5. Signature\nOwner Signature: ____________________\nDate: ____________________`;
 }
 
-function buildLocalAIDocument({ ownerFullName, state, trustee, trusteeRel, pets, fundAmt, diet, vet, special }) {
+function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee, primaryCaregiver, backupCaregiver, pets, fundAmt, diet, vet, special, remainderBeneficiary, oversightEnabled, oversightFrequency, finalDisposition }) {
   const petClauses = pets.map((pet, idx) =>
     `${idx + 1}. ${pet.name} (${pet.breed}, age ${pet.age}) shall be cared for in accordance with the care protocol in Section V.`
   ).join('\n');
@@ -1278,26 +1435,40 @@ II. Identification of Pets
 ${petClauses}
 
 III. Appointment and Duties of Trustee
-I appoint ${trustee} (${trusteeRel || 'designated caregiver'}) as trustee/caregiver, responsible for welfare decisions and fund stewardship solely for pet benefit.
+I appoint ${trustee} as Primary Trustee. If unable/unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume trustee authority.
 
-IV. Trust Funding and Distribution
+IV. Caregiver Designation
+Primary daily caregiver: ${primaryCaregiver || 'designated by trustee'}.
+Backup caregiver: ${backupCaregiver || 'to be designated by trustee if needed'}.
+Trustee may appoint temporary professional care when medically necessary.
+
+V. Trust Funding and Distribution
 Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Funds may be used for nutrition, routine and emergency veterinary treatment, grooming, boarding, behavioral support, and end-of-life care.
 
-V. Care Instructions
+VI. Care Instructions
 - Diet and feeding: ${diet || 'Follow veterinarian-recommended daily feeding and hydration schedule.'}
 - Veterinary plan: ${vet || 'Maintain annual preventive exams, vaccinations, and prompt treatment of illness/injury.'}
 - Special care notes: ${special || 'Maintain familiar routine, enrichment, and a low-stress home environment.'}
 
-VI. Trustee Compensation and Oversight
+VII. Trustee Compensation and Oversight
 Trustee may receive reasonable reimbursement for documented pet-care expenses and reasonable compensation as permitted by applicable law.
 
-VII. Trust Termination
+VIII. Remainder Distribution
+Upon termination of the trust, any remaining balance shall be distributed to ${remainderBeneficiary || 'the owner-designated beneficiary in estate documents'}.
+
+IX. Care Oversight
+${oversightEnabled ? `Periodic care inspections are required on a ${oversightFrequency} basis, with compliance notes retained by the trustee.` : 'No periodic inspection schedule is mandated; trustee remains accountable for prudent care and expenditure records.'}
+
+X. Final Disposition of Pet
+Owner instruction for final disposition: ${finalDisposition}.
+
+XI. Trust Termination
 ${terminationText}
 
-VIII. Governing Law
+XII. Governing Law
 This trust shall be governed by the pet trust laws of ${state}. Owner is advised to complete notarization and obtain legal review before final execution.
 
-IX. Signatures
+XIII. Signatures
 Owner Signature: ____________________
 Date: ____________________
 Trustee Acknowledgment: ____________________
@@ -1310,6 +1481,18 @@ function renderResultSummary(fundAmt) {
   document.getElementById('result-summary').innerHTML = `Recommended Trust Fund: <strong>${formatted}</strong><br>Includes:<br>✔ Lifetime care cost<br>✔ Medical contingency buffer<br>✔ Insurance gap coverage`;
 }
 
+function renderContinuitySummary(fundAmt, oversightEnabled, primaryCaregiver, trustee) {
+  const amount = Number(fundAmt || 0);
+  const formatted = amount ? `$${amount.toLocaleString()}` : 'TBD';
+  document.getElementById('continuity-summary').innerHTML =
+    `<strong>Care Continuity Summary</strong><br>` +
+    `Trust amount: ${formatted}<br>` +
+    `Long-term care funding path: active<br>` +
+    `Insurance-gap protection: included through trust reserves<br>` +
+    `Caregiver accountability: ${oversightEnabled ? 'periodic oversight enabled' : 'standard trustee accountability enabled'}<br>` +
+    `Assigned caregiver/trustee: ${primaryCaregiver || 'TBD'} / ${trustee || 'TBD'}`;
+}
+
 // Generate trust via local AI composer
 async function generateTrust() {
   const first = document.getElementById('owner-first').value.trim();
@@ -1317,14 +1500,20 @@ async function generateTrust() {
   const state = document.getElementById('owner-state').value;
   const fundAmt = document.getElementById('fund-amount').value;
   const trustee = document.getElementById('trustee').value.trim();
-  const trusteeRel = document.getElementById('trustee-rel').value.trim();
+  const successorTrustee = document.getElementById('successor-trustee').value.trim();
+  const primaryCaregiver = document.getElementById('primary-caregiver').value.trim();
+  const backupCaregiver = document.getElementById('backup-caregiver').value.trim();
   const diet = document.getElementById('care-diet').value.trim();
   const vet = document.getElementById('care-vet').value.trim();
   const special = document.getElementById('care-special').value.trim();
+  const remainderBeneficiary = document.getElementById('remainder-beneficiary').value.trim();
+  const oversightEnabled = document.getElementById('oversight-enabled').checked;
+  const oversightFrequency = document.getElementById('oversight-frequency').value;
+  const finalDisposition = document.getElementById('final-disposition').value;
   const ownerFullName = `${first} ${last}`.trim();
 
-  if (!first || !last || !state || !trustee) {
-    showToast('Please fill in your name, state, and trustee name.');
+  if (!first || !last || !state || !trustee || !primaryCaregiver) {
+    showToast('Please fill in your name, state, trustee, and primary caregiver.');
     return;
   }
 
@@ -1354,15 +1543,22 @@ async function generateTrust() {
       ownerFullName,
       state,
       trustee,
-      trusteeRel,
+      successorTrustee,
+      primaryCaregiver,
+      backupCaregiver,
       pets,
       fundAmt,
       diet,
       vet,
-      special
+      special,
+      remainderBeneficiary,
+      oversightEnabled,
+      oversightFrequency,
+      finalDisposition
     });
     document.getElementById('doc-content').textContent = localDoc || buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt);
     renderResultSummary(fundAmt);
+    renderContinuitySummary(fundAmt, oversightEnabled, primaryCaregiver, trustee);
     document.getElementById('doc-output').style.display = 'block';
     document.getElementById('doc-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
     showToast('Local AI generated your pet trust draft.');
@@ -1381,6 +1577,46 @@ function downloadDoc() {
   a.download = 'PawLegacy_Pet_Trust.txt';
   a.click();
   showToast('Document downloaded!');
+}
+
+function downloadPdfDoc() {
+  const content = document.getElementById('doc-content').textContent || 'No document generated yet.';
+  const printWin = window.open('', '_blank');
+  if (!printWin) {
+    showToast('Popup blocked. Please allow popups for PDF export.');
+    return;
+  }
+  printWin.document.write(`
+    <html>
+      <head>
+        <title>PawLegacy Pet Trust Document</title>
+        <style>
+          body { font-family: Georgia, serif; margin: 36px; color:#111; line-height:1.7; }
+          h1 { font-size: 20px; margin-bottom: 16px; }
+          pre { white-space: pre-wrap; font-family: Georgia, serif; font-size: 12pt; }
+          .note { font-size: 10pt; color: #555; margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>PawLegacy Pet Trust Agreement</h1>
+        <pre>${content.replace(/</g, '&lt;')}</pre>
+        <div class="note">Use your browser's “Save as PDF” option in the print dialog.</div>
+      </body>
+    </html>
+  `);
+  printWin.document.close();
+  printWin.focus();
+  printWin.print();
+}
+
+function downloadPlanningPacket() {
+  const packet = `PawLegacy Free Pet Planning Packet\n\n1) Pet Alert Card\n2) Emergency Info Sheet\n3) Pet Portfolio\n\nThis demo packet helps you prepare key pet-care information before creating a full legal pet trust.`;
+  const blob = new Blob([packet], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'PawLegacy_Pet_Planning_Packet.txt';
+  a.click();
+  showToast('Your free planning packet is ready.');
 }
 
 // FAQ
@@ -1473,14 +1709,17 @@ function openModal(cg) {
 
 // Init
 applyFilters();
-['owner-first','owner-last','fund-amount','trustee','trustee-rel'].forEach(id => {
+['owner-first','owner-last','fund-amount','trustee','primary-caregiver'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('input', updateLivePreview);
 });
 document.getElementById('calc-budget').addEventListener('input', updateCareCalculator);
 document.getElementById('calc-pet-type').addEventListener('change', updateCareCalculator);
+document.getElementById('oversight-enabled').addEventListener('change', toggleOversightFrequency);
 updateLivePreview();
 updateCareCalculator();
+toggleOversightFrequency();
 </script>
 </body>
 </html>
+etc/pawlegacy-mvp/script.js
