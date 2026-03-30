@@ -1510,6 +1510,11 @@ function buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt)
 }
 
 function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee, primaryCaregiver, backupCaregiver, pets, fundAmt, diet, vet, special, remainderBeneficiary, oversightEnabled, oversightFrequency, finalDisposition }) {
+  const generatedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const isNY = state.toLowerCase().includes('new york');
+  const nyComplianceLine = isNY
+    ? 'Structured for New York pet trust planning requirements and prepared for review under applicable New York trust and estate law.'
+    : `Structured for ${state} pet trust planning workflow with New York-style legal drafting conventions; state-specific attorney review is required.`;
   const petClauses = pets.map((pet, idx) =>
     `${idx + 1}. ${pet.name} (${pet.breed}, age ${pet.age}) shall be cared for in accordance with the care protocol in Section V.`
   ).join('\n');
@@ -1518,24 +1523,39 @@ function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee,
     ? `The trust terminates upon the death of the final surviving named pet or exhaustion of the trust corpus, whichever occurs later, with any remainder distributed pursuant to owner instructions.`
     : `The trust terminates upon the death of the final surviving named pet, with disposition of any remainder governed by owner estate instructions.`;
 
-  return `PET TRUST AGREEMENT (LOCAL AI DRAFT)
+  return `PAWLEGACY PET TRUST PLANNING DRAFT
+Prepared Pet Trust Draft — New York Planning Draft
+For Attorney Review and Execution
+
+DOCUMENT METADATA
+- Prepared for: ${ownerFullName}
+- State: ${state}
+- Date generated: ${generatedDate}
+- Draft status: PRE-EXECUTION LEGAL PLANNING DRAFT
+
+COMPLIANCE NOTICE
+${nyComplianceLine}
+Designed to support a New York-compliant pet trust workflow, but not a substitute for legal advice or final legal execution.
+
+ATTORNEY REVIEW RECOMMENDATION
+This draft should be reviewed by a licensed New York attorney prior to execution. Final enforceability depends on proper execution, notarization, funding, and legal review.
 
 I. Declaration and Purpose
-I, ${ownerFullName}, establish this Pet Trust to ensure continuous lifetime care for the animal beneficiary(ies) listed below.
+I, ${ownerFullName}, establish this Pet Trust planning draft to provide continuity of care for the animal beneficiary(ies) identified below, and to guide final attorney-reviewed execution documents.
 
 II. Identification of Pets
 ${petClauses}
 
 III. Appointment and Duties of Trustee
-I appoint ${trustee} as Primary Trustee. If unable/unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume trustee authority.
+I appoint ${trustee} as Primary Trustee, with fiduciary responsibility to administer trust assets solely for the benefit of the covered pet(s). If unable or unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume authority subject to final execution documents.
 
 IV. Caregiver Designation
 Primary daily caregiver: ${primaryCaregiver || 'designated by trustee'}.
 Backup caregiver: ${backupCaregiver || 'to be designated by trustee if needed'}.
-Trustee may appoint temporary professional care when medically necessary.
+Trustee may authorize temporary professional care where medically necessary or in the best interest of the covered pet(s).
 
 V. Trust Funding and Distribution
-Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Funds may be used for nutrition, routine and emergency veterinary treatment, grooming, boarding, behavioral support, and end-of-life care.
+Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Permitted uses include nutrition, routine and emergency veterinary treatment, medication, grooming, boarding, behavioral support, transportation, and end-of-life care. Trustee shall maintain reasonable records of disbursements.
 
 VI. Care Instructions
 - Diet and feeding: ${diet || 'Follow veterinarian-recommended daily feeding and hydration schedule.'}
@@ -1558,13 +1578,26 @@ XI. Trust Termination
 ${terminationText}
 
 XII. Governing Law
-This trust shall be governed by the pet trust laws of ${state}. Owner is advised to complete notarization and obtain legal review before final execution.
+This draft is prepared for review under applicable ${state} trust and estate law, including New York pet trust planning standards where relevant. Final governing-law language must be confirmed by licensed counsel in the executed document set.
 
-XIII. Signatures
+XIII. Execution Requirements
+Prior to execution, this draft requires: (a) licensed attorney review, (b) valid signatures, (c) notarization and any witness formalities required by applicable law, and (d) confirmation of trust funding mechanism.
+
+XIV. Execution Checklist
+- Confirm trustee and caregiver acceptance
+- Obtain attorney review
+- Sign and notarize
+- Confirm trust funding
+- Store signed copy and provide copies to trustee/caregiver
+
+XV. Signatures
 Owner Signature: ____________________
 Date: ____________________
 Trustee Acknowledgment: ____________________
-Date: ____________________`;
+Date: ____________________
+
+END NOTE
+PawLegacy generated planning draft — prepared for attorney review and execution workflow.`;
 }
 
 function renderResultSummary(fundAmt) {
@@ -1683,16 +1716,21 @@ function downloadPdfDoc() {
       <head>
         <title>PawLegacy Pet Trust Document</title>
         <style>
-          body { font-family: Georgia, serif; margin: 36px; color:#111; line-height:1.7; }
-          h1 { font-size: 20px; margin-bottom: 16px; }
-          pre { white-space: pre-wrap; font-family: Georgia, serif; font-size: 12pt; }
-          .note { font-size: 10pt; color: #555; margin-top: 20px; }
+          @page { margin: 0.8in; }
+          body { font-family: 'Times New Roman', Georgia, serif; color:#111; line-height:1.75; }
+          h1 { font-size: 20px; margin-bottom: 8px; letter-spacing: 0.02em; }
+          .subtitle { font-size: 11pt; color:#444; margin-bottom: 12px; }
+          .legal-box { border:1px solid #aaa; background:#f7f7f7; padding:8px 10px; font-size:10.5pt; margin-bottom: 12px; }
+          pre { white-space: pre-wrap; font-family: 'Times New Roman', Georgia, serif; font-size: 12pt; margin:0; }
+          .note { font-size: 10pt; color: #555; margin-top: 22px; border-top:1px solid #ccc; padding-top:8px; }
         </style>
       </head>
       <body>
         <h1>PawLegacy Pet Trust Agreement</h1>
+        <div class="subtitle">Prepared Pet Trust Draft · New York Planning Draft · For Attorney Review and Execution</div>
+        <div class="legal-box">This planning draft is designed for legal-tech workflow support and must be reviewed by licensed counsel before execution.</div>
         <pre>${content.replace(/</g, '&lt;')}</pre>
-        <div class="note">Use your browser's “Save as PDF” option in the print dialog.</div>
+        <div class="note">PawLegacy planning draft footer · Use your browser's “Save as PDF” option in the print dialog.</div>
       </body>
     </html>
   `);
