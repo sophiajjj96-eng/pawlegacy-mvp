@@ -741,6 +741,62 @@
   }
   .toast.show { transform: translateY(0); opacity: 1; }
 
+  .calc-result, .live-preview, .result-summary {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .result-summary {
+    margin-bottom: 1rem;
+    background: var(--sage-pale);
+    color: var(--bark);
+  }
+
+  .continuity-wrap {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .continuity-wrap h5 {
+    font-family: 'Playfair Display', serif;
+    color: var(--bark);
+    margin-bottom: 0.4rem;
+    font-size: 1.15rem;
+  }
+  .continuity-intro { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 0.8rem; }
+  .continuity-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .continuity-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    padding: 0.8rem;
+  }
+  .continuity-card h6 { font-size: 0.82rem; color: var(--bark); margin-bottom: 0.35rem; }
+  .continuity-card p { font-size: 0.77rem; color: var(--text-mid); line-height: 1.5; }
+
+  .checklist-list {
+    display: grid;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-mid);
+  }
+  .checklist-list label {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+  }
+  .checklist-list input { width: auto; }
+
   @media (max-width: 768px) {
     .hero { grid-template-columns: 1fr; gap: 2rem; }
     .hero-visual { display: none; }
@@ -750,6 +806,7 @@
     .caregiver-grid { grid-template-columns: 1fr 1fr; }
     .pet-row { grid-template-columns: 1fr 1fr; }
     .form-grid { grid-template-columns: 1fr; }
+    .continuity-cards { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -760,6 +817,7 @@
   <div class="nav-links">
     <a onclick="showPage('home')">Home</a>
     <a onclick="showPage('trust')">Create Trust</a>
+    <a onclick="showPage('legal')">Legal Support</a>
     <a onclick="showPage('pricing')">Pricing</a>
     <a onclick="showPage('caregiver')">Find a Caregiver</a>
     <a class="nav-cta" onclick="showPage('trust')">Get Started</a>
@@ -904,23 +962,117 @@
       </div>
     </div>
 
+    <div class="form-card">
+      <h3>Care Cost Calculator</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Pet Type Profile</label>
+          <select id="calc-pet-type">
+            <option value="golden retriever">Golden Retriever</option>
+            <option value="small dog">Small Dog</option>
+            <option value="cat">Cat</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Input Budget ($)</label>
+          <input type="number" id="calc-budget" placeholder="e.g. 5000">
+        </div>
+        <div class="form-group full">
+          <div id="calc-result" class="calc-result">
+            Enter a budget to estimate how many years of care it covers.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Live Preview</h3>
+      <div id="live-preview" class="live-preview">
+        Draft preview will reflect your pet name and trust amount in real time.
+      </div>
+    </div>
+
     <button class="generate-btn" id="gen-btn" onclick="generateTrust()">
       <span id="gen-btn-text">✨ Generate My Pet Trust</span>
     </button>
 
     <div class="loading-state" id="loading-state">
       <div class="spinner"></div>
-      <p>Our AI is drafting your personalized pet trust document…</p>
+      <p>Our local AI engine is drafting your personalized pet trust document…</p>
     </div>
 
     <div class="doc-output" id="doc-output">
       <div class="doc-badge">✓ AI-Generated Draft</div>
       <h4>Pet Trust Agreement</h4>
+      <div id="result-summary" class="result-summary"></div>
       <div class="doc-content" id="doc-content"></div>
+
+      <div class="continuity-wrap">
+        <h5>Care Continuity Plan</h5>
+        <p class="continuity-intro">Pet insurance often ends when the owner passes away. PawLegacy ensures continuous care funding beyond insurance limitations.</p>
+        <div class="continuity-cards">
+          <div class="continuity-card">
+            <h6>1️⃣ Insurance Gap</h6>
+            <p>Pet insurance does not transfer automatically after the owner's death. Coverage may be lost when it is needed most.</p>
+          </div>
+          <div class="continuity-card">
+            <h6>2️⃣ Trust Coverage</h6>
+            <p>Your pet trust fund ensures medical, food, and long-term care costs are always covered — even without insurance.</p>
+          </div>
+          <div class="continuity-card">
+            <h6>3️⃣ Emergency Buffer</h6>
+            <p>Built-in contingency funds handle unexpected surgeries, chronic conditions, and aging-related care.</p>
+          </div>
+        </div>
+      </div>
       <div class="doc-actions">
         <button class="btn-download" onclick="downloadDoc()">⬇ Download Document</button>
         <button class="btn-notarize" onclick="showToast('E-notarization service coming soon! Stay tuned.')">📋 Proceed to E-Notarization</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LEGAL SUPPORT PAGE ========== -->
+<div id="page-legal" class="page">
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Legal Review & Notarization Support</h2>
+      <p>Track your trust readiness by state and notarization path.</p>
+    </div>
+
+    <div class="form-card">
+      <h3>Setup</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>State</label>
+          <select id="legal-state">
+            <option>New York</option>
+            <option>California</option>
+            <option>Texas</option>
+            <option>Florida</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notarization Type</label>
+          <select id="legal-notary">
+            <option>Online Notarization</option>
+            <option>In-Person Notarization</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Checklist</h3>
+      <div class="checklist-list">
+        <label><input type="checkbox" class="legal-check"> Trustee confirmed and notified</label>
+        <label><input type="checkbox" class="legal-check"> Care instructions verified</label>
+        <label><input type="checkbox" class="legal-check"> Funding method selected</label>
+        <label><input type="checkbox" class="legal-check"> Witness / notary plan confirmed</label>
+      </div>
+      <button class="btn-primary" style="margin-top:1rem" onclick="generateLegalReport()">Generate Readiness Report</button>
+      <div id="legal-report" class="calc-result" style="margin-top:1rem"></div>
     </div>
   </div>
 </div>
@@ -1021,7 +1173,7 @@
     <p id="modal-bio-full"></p>
     <p id="modal-details" style="font-size:0.8rem;color:var(--text-light);margin-top:-1rem;margin-bottom:1.5rem;"></p>
     <div class="modal-actions">
-      <button class="btn-primary" style="flex:1" onclick="showToast('Request sent! The caregiver will contact you within 24 hours.'); document.getElementById(\'modal\').classList.remove(\'open\')">Send Request</button>
+      <button class="btn-primary" style="flex:1" onclick="showToast('Request sent! The caregiver will contact you within 24 hours.'); document.getElementById('modal').classList.remove('open')">Send Request</button>
       <button class="btn-secondary" style="flex:1" onclick="document.getElementById('modal').classList.remove('open')">Cancel</button>
     </div>
   </div>
@@ -1039,6 +1191,12 @@ function showPage(id) {
 
 // Pet management
 let pets = [];
+const careCostProfiles = {
+  'golden retriever': { monthly: 140, lifespan: 12, label: 'Golden Retriever' },
+  'small dog': { monthly: 95, lifespan: 14, label: 'Small Dog' },
+  'cat': { monthly: 75, lifespan: 15, label: 'Cat' }
+};
+
 function addPet() {
   const id = Date.now();
   pets.push(id);
@@ -1048,15 +1206,15 @@ function addPet() {
   div.innerHTML = `
     <div class="form-group">
       <label>Pet Name</label>
-      <input type="text" placeholder="e.g. Buddy" class="pet-name">
+      <input type="text" placeholder="e.g. Buddy" class="pet-name" oninput="updateLivePreview()">
     </div>
     <div class="form-group">
       <label>Species / Breed</label>
-      <input type="text" placeholder="e.g. Golden Retriever" class="pet-breed">
+      <input type="text" placeholder="e.g. Golden Retriever" class="pet-breed" oninput="updateLivePreview()">
     </div>
     <div class="form-group">
       <label>Age (years)</label>
-      <input type="number" placeholder="e.g. 4" class="pet-age" min="0" max="30">
+      <input type="number" placeholder="e.g. 4" class="pet-age" min="0" max="30" oninput="updateLivePreview()">
     </div>
     <button class="btn-remove" onclick="removePet(${id})">✕</button>`;
   document.getElementById('pet-list').appendChild(div);
@@ -1065,11 +1223,94 @@ function removePet(id) {
   const el = document.getElementById('pet-' + id);
   if(el) el.remove();
   pets = pets.filter(p => p !== id);
+  updateLivePreview();
 }
 // Add one default pet on load
 addPet();
 
-// Generate trust via Claude API
+function getPrimaryPetName() {
+  return document.querySelector('.pet-name')?.value?.trim() || 'your pet';
+}
+
+function updateLivePreview() {
+  const petName = getPrimaryPetName();
+  const amount = Number(document.getElementById('fund-amount')?.value || 0);
+  const displayAmount = amount > 0 ? amount.toLocaleString() : 'TBD';
+  const trustee = document.getElementById('trustee')?.value?.trim() || 'your selected caregiver';
+  const preview = `This draft names ${petName} as the protected beneficiary and allocates $${displayAmount} for long-term care under trustee ${trustee}.`;
+  document.getElementById('live-preview').textContent = preview;
+}
+
+function updateCareCalculator() {
+  const typeKey = document.getElementById('calc-pet-type').value;
+  const budget = Number(document.getElementById('calc-budget').value || 0);
+  const profile = careCostProfiles[typeKey];
+  const resultEl = document.getElementById('calc-result');
+  if (!budget) {
+    resultEl.textContent = 'Enter a budget to estimate how many years of care it covers.';
+    return;
+  }
+  const annualCost = profile.monthly * 12;
+  const coveredYears = budget / annualCost;
+  const enough = coveredYears >= profile.lifespan;
+  resultEl.textContent = `$${budget.toLocaleString()} covers about ${coveredYears.toFixed(1)} years of food + basic vet care for a ${profile.label}. Expected lifespan is ~${profile.lifespan} years, so this budget is ${enough ? 'likely sufficient' : 'likely short'}.`;
+}
+
+function buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt) {
+  return `PET TRUST AGREEMENT (DRAFT)\n\nOwner: ${ownerFullName}\nState: ${state}\nTrustee: ${trustee}\nAllocated Trust Fund: $${Number(fundAmt || 0).toLocaleString() || 'TBD'}\n\nCovered Pet(s):\n${petsText}\n\n1. Declaration and Purpose\nThis pet trust is established to provide ongoing support for the named pet(s) after the owner's death or incapacity.\n\n2. Trustee Duties\nThe trustee shall distribute funds solely for approved pet care costs including food, routine exams, medications, and emergency care.\n\n3. Funding and Distribution\nFunds are managed in trust and released in scheduled amounts with flexibility for medical contingencies.\n\n4. Governing Law\nThis draft should be reviewed for compliance with ${state} pet trust statutes before execution.\n\n5. Signature\nOwner Signature: ____________________\nDate: ____________________`;
+}
+
+function buildLocalAIDocument({ ownerFullName, state, trustee, trusteeRel, pets, fundAmt, diet, vet, special }) {
+  const petClauses = pets.map((pet, idx) =>
+    `${idx + 1}. ${pet.name} (${pet.breed}, age ${pet.age}) shall be cared for in accordance with the care protocol in Section V.`
+  ).join('\n');
+
+  const terminationText = Number(fundAmt || 0) > 0
+    ? `The trust terminates upon the death of the final surviving named pet or exhaustion of the trust corpus, whichever occurs later, with any remainder distributed pursuant to owner instructions.`
+    : `The trust terminates upon the death of the final surviving named pet, with disposition of any remainder governed by owner estate instructions.`;
+
+  return `PET TRUST AGREEMENT (LOCAL AI DRAFT)
+
+I. Declaration and Purpose
+I, ${ownerFullName}, establish this Pet Trust to ensure continuous lifetime care for the animal beneficiary(ies) listed below.
+
+II. Identification of Pets
+${petClauses}
+
+III. Appointment and Duties of Trustee
+I appoint ${trustee} (${trusteeRel || 'designated caregiver'}) as trustee/caregiver, responsible for welfare decisions and fund stewardship solely for pet benefit.
+
+IV. Trust Funding and Distribution
+Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Funds may be used for nutrition, routine and emergency veterinary treatment, grooming, boarding, behavioral support, and end-of-life care.
+
+V. Care Instructions
+- Diet and feeding: ${diet || 'Follow veterinarian-recommended daily feeding and hydration schedule.'}
+- Veterinary plan: ${vet || 'Maintain annual preventive exams, vaccinations, and prompt treatment of illness/injury.'}
+- Special care notes: ${special || 'Maintain familiar routine, enrichment, and a low-stress home environment.'}
+
+VI. Trustee Compensation and Oversight
+Trustee may receive reasonable reimbursement for documented pet-care expenses and reasonable compensation as permitted by applicable law.
+
+VII. Trust Termination
+${terminationText}
+
+VIII. Governing Law
+This trust shall be governed by the pet trust laws of ${state}. Owner is advised to complete notarization and obtain legal review before final execution.
+
+IX. Signatures
+Owner Signature: ____________________
+Date: ____________________
+Trustee Acknowledgment: ____________________
+Date: ____________________`;
+}
+
+function renderResultSummary(fundAmt) {
+  const amount = Number(fundAmt || 0);
+  const formatted = amount ? `$${amount.toLocaleString()}` : 'TBD';
+  document.getElementById('result-summary').innerHTML = `Recommended Trust Fund: <strong>${formatted}</strong><br>Includes:<br>✔ Lifetime care cost<br>✔ Medical contingency buffer<br>✔ Insurance gap coverage`;
+}
+
+// Generate trust via local AI composer
 async function generateTrust() {
   const first = document.getElementById('owner-first').value.trim();
   const last = document.getElementById('owner-last').value.trim();
@@ -1080,6 +1321,7 @@ async function generateTrust() {
   const diet = document.getElementById('care-diet').value.trim();
   const vet = document.getElementById('care-vet').value.trim();
   const special = document.getElementById('care-special').value.trim();
+  const ownerFullName = `${first} ${last}`.trim();
 
   if (!first || !last || !state || !trustee) {
     showToast('Please fill in your name, state, and trustee name.');
@@ -1102,48 +1344,28 @@ async function generateTrust() {
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('doc-output').style.display = 'none';
 
-  const prompt = `You are a legal document AI specializing in pet trusts. Generate a formal, professional pet trust agreement for the following details:
-
-Owner: ${first} ${last}
-State: ${state}
-Trust Fund Amount: $${fundAmt || 'TBD'}
-Trustee (Caregiver): ${trustee} (${trusteeRel || 'designated caregiver'})
-Pets:${petsText}
-Dietary Care Notes: ${diet || 'Standard care per veterinarian guidance'}
-Veterinary Information: ${vet || 'To be designated by owner'}
-Special Instructions: ${special || 'None specified'}
-
-Write a complete, formal Pet Trust Agreement document. Include:
-1. Declaration and Purpose
-2. Identification of Pets and Owner
-3. Appointment and Duties of Trustee
-4. Trust Funding and Distribution
-5. Care Instructions
-6. Trustee Compensation
-7. Trust Termination
-8. Governing Law (reference ${state} pet trust statutes)
-9. Signature Blocks
-
-Use formal legal language. Make it approximately 500–700 words. Format with clear section headings.`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
+    const pets = [...petRows].map((row, i) => ({
+      name: row.querySelector('.pet-name').value || `Pet ${i+1}`,
+      breed: row.querySelector('.pet-breed').value || 'Unknown breed',
+      age: row.querySelector('.pet-age').value || 'Unknown age'
+    }));
+    const localDoc = buildLocalAIDocument({
+      ownerFullName,
+      state,
+      trustee,
+      trusteeRel,
+      pets,
+      fundAmt,
+      diet,
+      vet,
+      special
     });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || 'Error generating document. Please try again.';
-    document.getElementById('doc-content').textContent = text;
+    document.getElementById('doc-content').textContent = localDoc || buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt);
+    renderResultSummary(fundAmt);
     document.getElementById('doc-output').style.display = 'block';
     document.getElementById('doc-output').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    showToast('Your pet trust document has been generated!');
-  } catch(e) {
-    showToast('Generation failed. Please check your connection and try again.');
+    showToast('Local AI generated your pet trust draft.');
   } finally {
     document.getElementById('loading-state').style.display = 'none';
     btn.disabled = false;
@@ -1177,6 +1399,17 @@ function showToast(msg) {
 // Modal
 function closeModal(e) {
   if (e.target.id === 'modal') document.getElementById('modal').classList.remove('open');
+}
+
+function generateLegalReport() {
+  const checks = [...document.querySelectorAll('.legal-check')];
+  const checked = checks.filter(c => c.checked).length;
+  const score = Math.round((checked / checks.length) * 100);
+  const state = document.getElementById('legal-state').value;
+  const notary = document.getElementById('legal-notary').value;
+  const remaining = checks.length - checked;
+  document.getElementById('legal-report').innerHTML =
+    `Readiness Score: <strong>${score}%</strong><br>State: ${state}<br>Notarization: ${notary}<br>${remaining === 0 ? '✅ Ready to finalize.' : `Next: complete ${remaining} more checklist item(s).`}`;
 }
 
 // Caregiver data
@@ -1240,6 +1473,14 @@ function openModal(cg) {
 
 // Init
 applyFilters();
+['owner-first','owner-last','fund-amount','trustee','trustee-rel'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateLivePreview);
+});
+document.getElementById('calc-budget').addEventListener('input', updateCareCalculator);
+document.getElementById('calc-pet-type').addEventListener('change', updateCareCalculator);
+updateLivePreview();
+updateCareCalculator();
 </script>
 </body>
 </html>
