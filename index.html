@@ -625,10 +625,30 @@
     margin-bottom: 0.8rem;
     line-height: 1.45;
   }
-  .legal-meta { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.45rem; margin-bottom: 0.8rem; }
-  .legal-meta div { border: 1px solid #e2dbd0; padding: 0.45rem 0.55rem; }
-  .legal-meta span { font-size: 0.64rem; color: #6b6258; text-transform: uppercase; letter-spacing: 0.06em; display: block; }
-  .legal-meta strong { font-size: 0.79rem; }
+  .legal-meta {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.9rem;
+    border: 1px solid #dfd7cb;
+    table-layout: fixed;
+  }
+  .legal-meta th, .legal-meta td {
+    border-bottom: 1px solid #e7e0d6;
+    padding: 0.48rem 0.58rem;
+    vertical-align: top;
+    text-align: left;
+    word-break: break-word;
+  }
+  .legal-meta tr:last-child th, .legal-meta tr:last-child td { border-bottom: none; }
+  .legal-meta th {
+    width: 34%;
+    font-size: 0.67rem;
+    color: #675d52;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #faf8f4;
+  }
+  .legal-meta td { font-size: 0.8rem; color: #241f1a; font-weight: 600; }
   .legal-section { margin: 0.68rem 0; }
   .legal-section h4 { font-size: 0.9rem; margin-bottom: 0.34rem; text-transform: uppercase; letter-spacing: 0.02em; }
   .legal-section p { margin-bottom: 0.35rem; }
@@ -1227,7 +1247,7 @@
     .result-hero { flex-direction: column; }
     .workflow-rail { grid-template-columns: 1fr 1fr; }
     .result-panels { grid-template-columns: 1fr; }
-    .meta-grid, .legal-meta { grid-template-columns: 1fr 1fr; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
     .continuity-cards { grid-template-columns: 1fr; }
     .legal-signatures { grid-template-columns: 1fr; }
     .packet-grid { grid-template-columns: 1fr; }
@@ -1239,7 +1259,7 @@
 
   @media (max-width: 520px) {
     .workflow-rail { grid-template-columns: 1fr; }
-    .meta-grid, .legal-meta { grid-template-columns: 1fr; }
+    .meta-grid { grid-template-columns: 1fr; }
     .doc-actions, .modal-actions { flex-direction: column; }
   }
 
@@ -1247,6 +1267,18 @@
     @page { margin: 1in; }
     body { background: #fff; color: #111; }
     nav, .doc-actions, .toast, .modal-overlay, .loading-state, .mascot-inline, .result-hero, .result-title-block, .workflow-rail, .result-panels, .continuity-wrap, .document-metadata, .doc-toggle, .doc-preview-excerpt, .doc-fade, .doc-gate-note, .dashboard-badges, .activation-panel { display: none !important; }
+    body.print-export-active * { visibility: hidden !important; }
+    body.print-export-active #print-export-root,
+    body.print-export-active #print-export-root * { visibility: visible !important; }
+    body.print-export-active #print-export-root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      display: block !important;
+    }
     .doc-output {
       display: block !important;
       border: none;
@@ -1267,6 +1299,29 @@
       font-size: 11.5pt;
       line-height: 1.35;
       display: block !important;
+    }
+    #print-export-root .legal-doc-panel {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 11.2pt;
+      line-height: 1.38;
+      max-width: 7.1in;
+      margin: 0 auto;
+      padding: 0;
+    }
+    #print-export-root .legal-headline { margin-bottom: 12pt; }
+    #print-export-root .legal-section,
+    #print-export-root .legal-notice,
+    #print-export-root .legal-signatures { break-inside: avoid; page-break-inside: avoid; }
+    #print-export-root .print-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0.35in;
+      text-align: center;
+      font-size: 9pt;
+      color: #5a5148;
     }
   }
 </style>
@@ -2094,14 +2149,14 @@ function buildLegalDocumentHTML(docText, meta) {
       <strong>COMPLIANCE NOTICE.</strong> This planning draft is designed for legal-tech workflow support and must be reviewed by licensed counsel before execution.
       ${meta.state.toLowerCase() === 'new york' ? '<br>Structured for New York pet trust planning requirements under EPTL § 7-8.1.' : `<br>Structured for ${escapeHtml(meta.state)} pet trust planning requirements with jurisdiction-specific legal review required.`}
     </div>
-    <div class="legal-meta">
-      <div><span>Prepared for</span><strong>${escapeHtml(meta.ownerFullName)}</strong></div>
-      <div><span>State / Jurisdiction</span><strong>${escapeHtml(meta.state)}</strong></div>
-      <div><span>Date generated</span><strong>${escapeHtml(meta.generatedDate)}</strong></div>
-      <div><span>Draft status</span><strong>Planning Draft — Not Executed</strong></div>
-      <div><span>Review status</span><strong>Attorney Review Pending</strong></div>
-      <div><span>Trust fund</span><strong>${escapeHtml(meta.fundFormatted)}</strong></div>
-    </div>
+    <table class="legal-meta" role="presentation" aria-label="Document metadata">
+      <tr><th>Prepared for</th><td>${escapeHtml(meta.ownerFullName)}</td></tr>
+      <tr><th>State / Jurisdiction</th><td>${escapeHtml(meta.state)}</td></tr>
+      <tr><th>Date generated</th><td>${escapeHtml(meta.generatedDate)}</td></tr>
+      <tr><th>Draft status</th><td>Planning Draft — Not Executed</td></tr>
+      <tr><th>Review status</th><td>Attorney Review Pending</td></tr>
+      <tr><th>Trust fund</th><td>${escapeHtml(meta.fundFormatted)}</td></tr>
+    </table>
     ${structuredSections}
     <div class="legal-signatures">
       <div class="sig-col">
@@ -2248,42 +2303,31 @@ function downloadDoc() {
 
 function downloadPdfDoc() {
   const content = generatedDocumentHTML || '<p>No document generated yet.</p>';
-  const printWin = window.open('', '_blank');
-  if (!printWin) {
-    showToast('Popup blocked. Please allow popups for PDF export.');
-    return;
+  let exportRoot = document.getElementById('print-export-root');
+  if (!exportRoot) {
+    exportRoot = document.createElement('div');
+    exportRoot.id = 'print-export-root';
+    exportRoot.style.display = 'none';
+    document.body.appendChild(exportRoot);
   }
-  printWin.document.write(`
-    <html>
-      <head>
-        <title>PawLegacy Pet Trust Document</title>
-        <style>
-          @page { margin: 1in; }
-          body { font-family: 'Times New Roman', Georgia, serif; color:#111; line-height:1.35; max-width: 7.2in; margin: 0 auto; }
-          h1 { font-size: 17pt; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.01em; }
-          .subtitle { font-size: 12pt; color:#333; margin-bottom: 10px; font-weight: 700; }
-          .legal-box { border:1px solid #888; background:#f7f7f7; padding:8px 10px; font-size:10pt; margin-bottom: 12px; }
-          .doc-wrap { font-family: 'Times New Roman', Georgia, serif; font-size: 11.2pt; line-height: 1.38; }
-          .note { font-size: 9.5pt; color: #555; margin-top: 16px; border-top:1px solid #ccc; padding-top:8px; }
-          .legal-headline { text-align:center; border-bottom:1px solid #ccc; margin-bottom:8px; padding-bottom:6px; }
-          .legal-meta { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-          .legal-meta td { border:1px solid #ccc; padding:4px 6px; font-size:10pt; }
-          .legal-section { margin-bottom: 10px; }
-          .legal-signatures { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
-          .sig-line { border-bottom:1px solid #222; height:22px; margin:10px 0 4px; }
-        </style>
-      </head>
-      <body>
-        <h1>PawLegacy Pet Trust Agreement</h1>
-        <div class="subtitle">Prepared Pet Trust Draft · Planning Draft · For Attorney Review and Execution</div>
-        <div class="doc-wrap">${content}</div>
-        <div class="note">PawLegacy planning draft footer · Use your browser's “Save as PDF” option in the print dialog.</div>
-      </body>
-    </html>
-  `);
-  printWin.document.close();
-  printWin.focus();
-  printWin.print();
+
+  const priorTitle = document.title;
+  document.title = 'PawLegacy Pet Trust Planning Draft';
+  exportRoot.innerHTML = `<div class="legal-doc-panel">${content}<div class="print-footer">PawLegacy Planning Draft | For Attorney Review Only</div></div>`;
+  document.body.classList.add('print-export-active');
+
+  const cleanupPrintExport = () => {
+    document.body.classList.remove('print-export-active');
+    exportRoot.style.display = 'none';
+    exportRoot.innerHTML = '';
+    document.title = priorTitle;
+    window.removeEventListener('afterprint', cleanupPrintExport);
+  };
+
+  exportRoot.style.display = 'block';
+  window.addEventListener('afterprint', cleanupPrintExport);
+  window.print();
+  setTimeout(cleanupPrintExport, 1000);
 }
 
 function downloadPlanningPacket() {
