@@ -2115,12 +2115,10 @@ function formatComplianceBadge(state) {
   return `✓ Structured from ${state} Law`;
 }
 
-function buildLegalDocumentHTML(docText, meta) {
-  const safe = escapeHtml(docText || '');
+function parseRomanSections(docText = '') {
   const sectionRegex = /(?:^|\n)([IVXLCDM]+)\.\s+([^\n]+)\n([\s\S]*?)(?=\n[IVXLCDM]+\.\s+[^\n]+\n|$)/g;
   const sections = [];
   let match;
-
   while ((match = sectionRegex.exec(docText)) !== null) {
     sections.push({
       numeral: match[1],
@@ -2128,6 +2126,12 @@ function buildLegalDocumentHTML(docText, meta) {
       content: match[3].trim()
     });
   }
+  return sections;
+}
+
+function buildLegalDocumentHTML(docText, meta) {
+  const safe = escapeHtml(docText || '');
+  const sections = parseRomanSections(docText);
 
   const structuredSections = sections.length ? sections.map(section => {
     const lines = section.content.split('\n').filter(Boolean);
@@ -2302,32 +2306,191 @@ function downloadDoc() {
 }
 
 function downloadPdfDoc() {
-  const content = generatedDocumentHTML || '<p>No document generated yet.</p>';
-  let exportRoot = document.getElementById('print-export-root');
-  if (!exportRoot) {
-    exportRoot = document.createElement('div');
-    exportRoot.id = 'print-export-root';
-    exportRoot.style.display = 'none';
-    document.body.appendChild(exportRoot);
+  if (!generatedDocumentText) {
+    showToast('Generate a document before exporting PDF.');
+    return;
   }
 
-  const priorTitle = document.title;
-  document.title = 'PawLegacy Pet Trust Planning Draft';
-  exportRoot.innerHTML = `<div class="legal-doc-panel">${content}<div class="print-footer">PawLegacy Planning Draft | For Attorney Review Only</div></div>`;
-  document.body.classList.add('print-export-active');
-
-  const cleanupPrintExport = () => {
-    document.body.classList.remove('print-export-active');
-    exportRoot.style.display = 'none';
-    exportRoot.innerHTML = '';
-    document.title = priorTitle;
-    window.removeEventListener('afterprint', cleanupPrintExport);
+  const ensureJsPdfLoaded = async () => {
+    if (window.jspdf?.jsPDF) return true;
+    const sources = [
+      'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+      'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js'
+    ];
+    for (const src of sources) {
+      try {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+        if (window.jspdf?.jsPDF) return true;
+      } catch (_) {}
+    }
+    return false;
   };
 
-  exportRoot.style.display = 'block';
-  window.addEventListener('afterprint', cleanupPrintExport);
-  window.print();
-  setTimeout(cleanupPrintExport, 1000);
+  (async () => {
+    const loaded = await ensureJsPdfLoaded();
+    if (!loaded) {
+      showToast('PDF library failed to load. Check network and try again.');
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter', compress: true });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 54;
+    const contentWidth = pageWidth - (margin * 2);
+    const footerGap = 34;
+    const lineHeight = 15.5;
+    let y = margin;
+    let pageNo = 1;
+
+    const drawFooter = () => {
+      doc.setFont('times', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(95, 88, 80);
+      doc.text(`PawLegacy Planning Draft | For Attorney Review Only | Page ${pageNo}`, pageWidth / 2, pageHeight - 20, { align: 'center' });
+    };
+
+    const ensureSpace = (needed = lineHeight) => {
+      if (y + needed > pageHeight - margin - footerGap) {
+        drawFooter();
+        doc.addPage();
+        pageNo += 1;
+        y = margin;
+      }
+    };
+
+    const writeWrapped = (text, size = 11, style = 'normal', color = [24, 24, 24], extraGap = 0) => {
+      doc.setFont('times', style);
+      doc.setFontSize(size);
+      doc.setTextColor(color[0], color[1], color[2]);
+      const lines = doc.splitTextToSize(text, contentWidth);
+      ensureSpace(lines.length * lineHeight + 2 + extraGap);
+      doc.text(lines, margin, y);
+      y += (lines.length * lineHeight) + extraGap;
+    };
+
+    const owner = document.getElementById('meta-owner')?.textContent?.trim() || 'N/A';
+    const state = document.getElementById('meta-state')?.textContent?.trim() || 'N/A';
+    const generatedDate = document.getElementById('meta-date')?.textContent?.trim() || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const fund = document.getElementById('meta-fund')?.textContent?.trim() || 'TBD';
+    const trustee = document.getElementById('trustee')?.value?.trim() || '____________________';
+
+    doc.setFont('times', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(20, 20, 20);
+    doc.text('PAWLEGACY PET TRUST PLANNING DRAFT', pageWidth / 2, y, { align: 'center' });
+    y += 24;
+
+    doc.setFont('times', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(65, 61, 56);
+    doc.text(`Prepared Pet Trust Draft — ${state} Planning Draft · For Attorney Review and Execution`, pageWidth / 2, y, { align: 'center' });
+    y += 22;
+
+    ensureSpace(66);
+    doc.setDrawColor(181, 171, 157);
+    doc.setFillColor(248, 245, 239);
+    doc.rect(margin, y, contentWidth, 48, 'FD');
+    doc.setFont('times', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(47, 42, 36);
+    doc.text('COMPLIANCE NOTICE', margin + 10, y + 15);
+    doc.setFont('times', 'normal');
+    doc.setFontSize(10.5);
+    const notice = state.toLowerCase() === 'new york'
+      ? 'This planning draft must be reviewed by licensed counsel before execution. Structured for New York pet trust planning requirements under EPTL § 7-8.1.'
+      : `This planning draft must be reviewed by licensed counsel before execution. Structured for ${state} pet trust planning requirements with jurisdiction-specific legal review.`;
+    const noticeLines = doc.splitTextToSize(notice, contentWidth - 20);
+    doc.text(noticeLines, margin + 10, y + 30);
+    y += 64;
+
+    const metadataRows = [
+      ['Prepared for', owner],
+      ['State / Jurisdiction', state],
+      ['Date generated', generatedDate],
+      ['Draft status', 'Planning Draft — Not Executed'],
+      ['Review status', 'Attorney Review Pending'],
+      ['Trust fund', fund]
+    ];
+    const leftW = 170;
+    metadataRows.forEach(([label, value]) => {
+      const valueLines = doc.splitTextToSize(value, contentWidth - leftW - 14);
+      const rowH = Math.max(26, valueLines.length * 13 + 10);
+      ensureSpace(rowH + 1);
+      doc.setDrawColor(218, 210, 198);
+      doc.rect(margin, y, leftW, rowH);
+      doc.rect(margin + leftW, y, contentWidth - leftW, rowH);
+      doc.setFont('times', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(102, 95, 88);
+      doc.text(label.toUpperCase(), margin + 8, y + 15);
+      doc.setFont('times', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(28, 28, 28);
+      doc.text(valueLines, margin + leftW + 8, y + 15);
+      y += rowH;
+    });
+    y += 18;
+
+    const sections = parseRomanSections(generatedDocumentText);
+    const renderedSections = sections.length ? sections : [{ numeral: '', title: 'Document Text', content: generatedDocumentText }];
+    renderedSections.forEach(section => {
+      const heading = `${section.numeral ? `${section.numeral}. ` : ''}${section.title}`;
+      writeWrapped(heading, 12, 'bold', [28, 25, 22], 8);
+      const lines = section.content.split('\n').map(s => s.trim()).filter(Boolean);
+      lines.forEach(line => {
+        if (/^[A-Z]\.\s+/.test(line)) {
+          const lead = line.slice(0, 2);
+          const rest = line.slice(2).trim();
+          writeWrapped(`${lead} ${rest}`, 11, 'bold', [36, 33, 29], 3);
+        } else {
+          writeWrapped(line, 11, 'normal', [26, 26, 26], 3);
+        }
+      });
+      y += 6;
+    });
+
+    ensureSpace(130);
+    doc.setDrawColor(188, 178, 165);
+    doc.line(margin, y, margin + contentWidth, y);
+    y += 16;
+    doc.setFont('times', 'bold');
+    doc.setFontSize(11);
+    doc.text('SIGNATURES', margin, y);
+    y += 14;
+
+    const colW = (contentWidth - 24) / 2;
+    const leftX = margin;
+    const rightX = margin + colW + 24;
+    const sigTop = y + 10;
+    ensureSpace(110);
+
+    doc.setFont('times', 'bold');
+    doc.setFontSize(10.5);
+    doc.text('Grantor / Owner Signature', leftX, sigTop);
+    doc.text('Trustee Acknowledgment', rightX, sigTop);
+    doc.setDrawColor(35, 35, 35);
+    doc.line(leftX, sigTop + 30, leftX + colW, sigTop + 30);
+    doc.line(rightX, sigTop + 30, rightX + colW, sigTop + 30);
+    doc.setFont('times', 'normal');
+    doc.setFontSize(10.5);
+    doc.text(`Printed Name: ${owner}`, leftX, sigTop + 46);
+    doc.text(`Printed Name: ${trustee}`, rightX, sigTop + 46);
+    doc.text('Date: ____________________', leftX, sigTop + 62);
+    doc.text('Date: ____________________', rightX, sigTop + 62);
+    y = sigTop + 82;
+
+    drawFooter();
+    doc.save('PawLegacy_Pet_Trust_Planning_Draft.pdf');
+  })();
 }
 
 function downloadPlanningPacket() {
