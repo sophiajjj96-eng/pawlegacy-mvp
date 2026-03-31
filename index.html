@@ -429,125 +429,229 @@
     display: none;
     background: var(--warm-white);
     border-radius: var(--radius);
-    border: 2px solid var(--sage-light);
-    padding: 2.5rem;
+    border: 1.5px solid var(--border);
     margin-top: 1.5rem;
     position: relative;
     box-shadow: var(--shadow);
+    overflow: hidden;
   }
-  .doc-output .doc-badge {
-    position: absolute; top: -12px; left: 24px;
-    background: var(--sage);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 4px 14px;
-    border-radius: 20px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .result-dashboard-header {
+    background: var(--bark);
+    color: var(--cream);
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
   }
-  .doc-output h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+  .result-overline { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.82; margin-bottom: 0.3rem; }
+  .result-dashboard-header h4 { font-size: 1.2rem; margin: 0; color: var(--cream); font-family: 'Playfair Display', serif; }
+  .doc-badge {
+    background: #2e7c52;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.22);
+  }
+  .doc-output > *:not(.result-dashboard-header) { margin-left: 1.35rem; margin-right: 1.35rem; }
+  .result-hero {
+    margin-top: 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .result-hero-bubble {
+    flex: 1;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.78rem 0.92rem;
+    font-size: 0.86rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+  .result-title-block { text-align: center; margin: 1rem 0 0.85rem; }
+  .result-title-block h5 { font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--bark); margin-bottom: 0.35rem; }
+  .result-title-block p { color: var(--text-mid); font-size: 0.9rem; }
+  .compliance-notice {
+    border: 1px solid #f0d7a2;
+    background: #fff6e6;
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.8rem;
+    color: #6b4e1a;
+    font-size: 0.81rem;
+    line-height: 1.55;
+  }
+  .dashboard-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0 1rem; }
+  .status-pill {
+    border: 1px solid var(--border);
+    background: #fff;
     color: var(--bark);
-    margin-bottom: 1rem;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1rem;
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
   }
-  .doc-content {
-    font-size: 0.875rem;
-    line-height: 1.8;
-    color: var(--text-main);
-    white-space: pre-wrap;
+  .workflow-rail {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 0.95rem;
+  }
+  .workflow-rail::before {
+    content: '';
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    top: 16px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .workflow-step {
+    position: relative;
+    z-index: 1;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 12px;
+    padding: 0.65rem;
+    min-height: 92px;
+    box-shadow: var(--shadow);
+  }
+  .workflow-dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.86rem; font-weight: 700;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-mid);
+    margin-bottom: 0.45rem;
+  }
+  .workflow-step .n { font-size: 0.72rem; color: var(--text-light); margin-bottom: 0.18rem; }
+  .workflow-step .t { font-size: 0.78rem; color: var(--bark); line-height: 1.35; }
+  .workflow-step.done { border-color: rgba(92,122,95,0.5); background: var(--sage-pale); }
+  .workflow-step.done .workflow-dot { background: var(--sage); color: white; border-color: var(--sage); }
+  .workflow-step.active { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(232,160,69,0.2), var(--shadow); }
+  .workflow-step.active .workflow-dot { background: var(--amber); color: white; border-color: var(--amber); }
+  .workflow-step.locked { background: #fcfbf8; }
+  .workflow-step.locked .workflow-dot { border-style: dashed; color: var(--text-light); }
+  .workflow-step.clickable { cursor: pointer; }
+  .result-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin: 0.9rem 0 0.7rem;
+  }
+  .calc-result, .live-preview, .result-summary {
     background: #fff;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 1rem;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    line-height: 1.6;
   }
-  .doc-actions {
-    display: flex; gap: 1rem; margin-top: 1.5rem;
-    flex-wrap: wrap;
-  }
-  .btn-download {
-    flex: 1;
-    background: var(--sage);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-  }
-  .btn-notarize {
-    flex: 1;
-    background: var(--amber);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-  }
-  .btn-pdf {
-    flex: 1;
-    background: var(--bark-light);
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-  }
-
-  /* ====== PRICING PAGE ====== */
-  .pricing-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-  }
-  .pricing-header { text-align: center; margin-bottom: 3rem; }
-  .pricing-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
+  .result-summary {
+    background: #f4faf4;
     color: var(--bark);
-    margin-bottom: 0.5rem;
   }
-  .pricing-header p { color: var(--text-mid); }
-  .pricing-grid {
+  .continuity-wrap { margin-top: 1rem; padding-top: 0.4rem; }
+  .continuity-wrap h5 { font-family: 'Playfair Display', serif; color: var(--bark); margin-bottom: 0.4rem; font-size: 1.15rem; }
+  .continuity-intro { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 0.7rem; }
+  .continuity-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  .continuity-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; }
+  .continuity-card.gap { background: #fff7ef; }
+  .continuity-card.coverage { background: #eef5ef; }
+  .continuity-card.buffer { background: #f1effb; }
+  .continuity-card h6 { font-size: 0.84rem; color: var(--bark); margin-bottom: 0.35rem; }
+  .continuity-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.48; }
+  .document-metadata {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.95rem 1rem;
+    margin-top: 1rem;
+    background: #fffdf9;
+  }
+  .document-metadata h6 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--bark);
+    margin-bottom: 0.25rem;
+  }
+  .document-metadata p { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 0.8rem; }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem;
+  }
+  .meta-grid div { border: 1px solid var(--border); border-radius: 10px; background: #fff; padding: 0.55rem 0.62rem; }
+  .meta-grid span { display: block; font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+  .meta-grid strong { font-size: 0.82rem; color: var(--bark); }
+  .doc-preview-wrap { position: relative; margin-top: 0.9rem; }
+  .doc-preview-excerpt {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 0.7rem 0.85rem;
+    color: var(--text-mid);
+    font-size: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+  .doc-content.legal-doc-panel {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #1c1814;
+    background: #fff;
+    border: 1px solid #d7d0c6;
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .legal-headline { text-align: center; border-bottom: 1px solid #d8d2ca; margin-bottom: 0.85rem; padding-bottom: 0.7rem; }
+  .legal-headline h3 { font-size: 1.15rem; letter-spacing: 0.02em; margin-bottom: 0.25rem; }
+  .legal-headline p { font-size: 0.78rem; color: #4d4339; }
+  .legal-notice {
+    border: 1px solid #c5bbad;
+    background: #f8f5ef;
+    padding: 0.58rem 0.72rem;
+    font-size: 0.77rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.45;
+  }
+  .legal-meta { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.45rem; margin-bottom: 0.8rem; }
+  .legal-meta div { border: 1px solid #e2dbd0; padding: 0.45rem 0.55rem; }
+  .legal-meta span { font-size: 0.64rem; color: #6b6258; text-transform: uppercase; letter-spacing: 0.06em; display: block; }
+  .legal-meta strong { font-size: 0.79rem; }
+  .legal-section { margin: 0.68rem 0; }
+  .legal-section h4 { font-size: 0.9rem; margin-bottom: 0.34rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  .legal-section p { margin-bottom: 0.35rem; }
+  .legal-subsection { margin-left: 0.4rem; padding-left: 0.4rem; border-left: 2px solid #ece7df; }
+  .legal-signatures {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1.5px solid #d9d2c7;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    gap: 0.9rem;
   }
-  .plan-card {
-    background: var(--warm-white);
-    border-radius: var(--radius);
-    border: 1.5px solid var(--border);
-    padding: 2rem;
-    position: relative;
-    box-shadow: var(--shadow);
-  }
-  .doc-preview-wrap {
-    position: relative;
-  }
-  .doc-preview-wrap.collapsed .doc-content {
-    max-height: 320px;
-    overflow: hidden;
-  }
+  .sig-col { font-size: 0.78rem; }
+  .sig-line { border-bottom: 1px solid #3d2b1f; height: 26px; margin: 0.65rem 0 0.3rem; }
+  .doc-preview-wrap.collapsed .doc-content { display: none; }
+  .doc-preview-wrap:not(.collapsed) .doc-preview-excerpt { display: none; }
   .doc-fade {
     display: none;
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 120px;
+    height: 90px;
     background: linear-gradient(180deg, rgba(255,253,249,0) 0%, rgba(255,253,249,0.96) 65%, rgba(255,253,249,1) 100%);
     border-bottom-left-radius: var(--radius-sm);
     border-bottom-right-radius: var(--radius-sm);
@@ -579,6 +683,53 @@
     padding: 7px 14px;
     font-size: 0.8rem;
     font-weight: 600;
+  }
+  .doc-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.25rem 1.35rem 1.35rem !important;
+    flex-wrap: wrap;
+  }
+  .doc-actions button {
+    border-radius: 999px;
+    padding: 11px 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.84rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary-strong { background: var(--amber); color: #fff; }
+  .btn-secondary-strong { background: var(--bark-light); color: #fff; }
+  .btn-ghost { background: transparent; border-color: var(--border) !important; color: var(--bark); }
+
+  /* ====== PRICING PAGE ====== */
+  .pricing-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+  .pricing-header { text-align: center; margin-bottom: 3rem; }
+  .pricing-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--bark);
+    margin-bottom: 0.5rem;
+  }
+  .pricing-header p { color: var(--text-mid); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .plan-card {
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    box-shadow: var(--shadow);
   }
   .plan-card.featured {
     border-color: var(--amber);
@@ -830,48 +981,6 @@
   }
   .toast.show { transform: translateY(0); opacity: 1; }
 
-  .calc-result, .live-preview, .result-summary {
-    background: var(--cream);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    font-size: 0.88rem;
-    color: var(--text-mid);
-    line-height: 1.6;
-  }
-
-  .result-summary {
-    margin-bottom: 1rem;
-    background: var(--sage-pale);
-    color: var(--bark);
-  }
-
-  .continuity-wrap {
-    margin-top: 1.25rem;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-  }
-  .continuity-wrap h5 {
-    font-family: 'Playfair Display', serif;
-    color: var(--bark);
-    margin-bottom: 0.4rem;
-    font-size: 1.15rem;
-  }
-  .continuity-intro { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 0.8rem; }
-  .continuity-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-  .continuity-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--cream);
-    padding: 0.8rem;
-  }
-  .continuity-card h6 { font-size: 0.82rem; color: var(--bark); margin-bottom: 0.35rem; }
-  .continuity-card p { font-size: 0.77rem; color: var(--text-mid); line-height: 1.5; }
-
   .checklist-list {
     display: grid;
     gap: 0.5rem;
@@ -1114,7 +1223,13 @@
     .caregiver-grid { grid-template-columns: 1fr 1fr; }
     .pet-row { grid-template-columns: 1fr 1fr; }
     .form-grid { grid-template-columns: 1fr; }
+    .result-dashboard-header { flex-direction: column; align-items: flex-start; }
+    .result-hero { flex-direction: column; }
+    .workflow-rail { grid-template-columns: 1fr 1fr; }
+    .result-panels { grid-template-columns: 1fr; }
+    .meta-grid, .legal-meta { grid-template-columns: 1fr 1fr; }
     .continuity-cards { grid-template-columns: 1fr; }
+    .legal-signatures { grid-template-columns: 1fr; }
     .packet-grid { grid-template-columns: 1fr; }
     .social-grid { grid-template-columns: 1fr; }
     .exec-flow { grid-template-columns: 1fr 1fr; }
@@ -1122,26 +1237,37 @@
     .mascot-img { width: 78px; }
   }
 
+  @media (max-width: 520px) {
+    .workflow-rail { grid-template-columns: 1fr; }
+    .meta-grid, .legal-meta { grid-template-columns: 1fr; }
+    .doc-actions, .modal-actions { flex-direction: column; }
+  }
+
   @media print {
     @page { margin: 1in; }
     body { background: #fff; color: #111; }
-    nav, .doc-actions, .toast, .modal-overlay, .loading-state, .mascot-inline { display: none !important; }
+    nav, .doc-actions, .toast, .modal-overlay, .loading-state, .mascot-inline, .result-hero, .result-title-block, .workflow-rail, .result-panels, .continuity-wrap, .document-metadata, .doc-toggle, .doc-preview-excerpt, .doc-fade, .doc-gate-note, .dashboard-badges, .activation-panel { display: none !important; }
     .doc-output {
       display: block !important;
       border: none;
       padding: 0;
       margin: 0;
     }
+    .result-dashboard-header {
+      background: transparent;
+      color: #111;
+      padding: 0;
+      margin: 0 0 8px;
+    }
+    .doc-badge { border: 1px solid #999; color: #111; background: #fff; }
     .doc-content {
       border: none;
       padding: 0;
-      white-space: pre-wrap;
       font-family: 'Times New Roman', Georgia, serif;
       font-size: 11.5pt;
       line-height: 1.35;
-      text-indent: 0.5in;
+      display: block !important;
     }
-    .result-summary, #continuity-summary, .continuity-wrap { display: none !important; }
   }
 </style>
 </head>
@@ -1422,25 +1548,57 @@
     </div>
 
     <div class="doc-output" id="doc-output">
-      <div class="doc-badge">✓ Structured from New York Law</div>
-      <h4>Your Pet Trust Draft is Ready</h4>
-      <div class="mascot-inline right" style="margin-top:0;margin-bottom:0.7rem;">
-        <div class="mascot-bubble"><strong>Trust Expert:</strong> Your trust draft is ready for review.</div>
-        <img class="mascot-img" src="images/mascot-expert.png" alt="Legal expert mascot">
+      <div class="result-dashboard-header">
+        <div>
+          <div class="result-overline">PawLegacy Legal Workflow</div>
+          <h4 id="result-dashboard-title">Your Pet Trust Dashboard</h4>
+        </div>
+        <div class="doc-badge" id="result-compliance-badge">✓ Structured from New York Law</div>
       </div>
-      <div class="compliance-notice">
+
+      <div class="result-hero">
+        <img class="mascot-img" src="images/mascot-expert.png" alt="Legal expert mascot">
+        <div class="result-hero-bubble" id="result-expert-message"><strong>Trust Expert:</strong> Your trust draft is ready for review. All care instructions and trustee details have been recorded — proceed to attorney review when ready.</div>
+      </div>
+
+      <div class="result-title-block">
+        <h5>Your Pet Trust Draft is Ready</h5>
+        <p>Planning draft prepared for attorney review and execution</p>
+      </div>
+
+      <div class="compliance-notice" id="result-draft-notice">
         <strong>Draft status: Planning Draft — Not Executed.</strong><br>
         Structured for New York pet trust planning. Final enforceability depends on attorney review, proper execution, notarization, and funding.
       </div>
-      <div class="exec-flow" aria-label="Execution flow">
-        <div class="exec-step completed"><div class="n">Step 1</div><div class="t">Draft Generated</div></div>
-        <div class="exec-step clickable" id="step-review" onclick="showActivationStep('review')"><div class="n">Step 2</div><div class="t">Attorney Review (Pending)</div></div>
-        <div class="exec-step clickable" id="step-notary" onclick="showActivationStep('notary')"><div class="n">Step 3</div><div class="t">Notarization (Locked)</div></div>
-        <div class="exec-step"><div class="n">Step 4</div><div class="t">Trust Activation</div></div>
+
+      <div class="dashboard-badges">
+        <span class="status-pill">Planning Draft</span>
+        <span class="status-pill">Attorney Review Pending</span>
+        <span class="status-pill">Ready for Download</span>
       </div>
+
+      <div class="workflow-rail" aria-label="Execution flow">
+        <div class="workflow-step done">
+          <div class="workflow-dot">✓</div>
+          <div class="workflow-copy"><div class="n">Step 1 · Draft Generated</div><div class="t">Draft prepared and metadata captured</div></div>
+        </div>
+        <div class="workflow-step active clickable" id="step-review" onclick="showActivationStep('review')">
+          <div class="workflow-dot">2</div>
+          <div class="workflow-copy"><div class="n">Step 2 · Attorney Review</div><div class="t">Pending licensed counsel review</div></div>
+        </div>
+        <div class="workflow-step locked clickable" id="step-notary" onclick="showActivationStep('notary')">
+          <div class="workflow-dot">🔒</div>
+          <div class="workflow-copy"><div class="n">Step 3 · Notarization</div><div class="t">Unlocks after legal review</div></div>
+        </div>
+        <div class="workflow-step locked">
+          <div class="workflow-dot">🔒</div>
+          <div class="workflow-copy"><div class="n">Step 4 · Trust Activation</div><div class="t">Funding and execution complete</div></div>
+        </div>
+      </div>
+
       <div class="activation-panel" id="activation-review">
         <h6>Attorney Review (Coming Soon)</h6>
-        <p>We are building a network of licensed New York attorneys who can review your trust online.</p>
+        <p>We are building a network of licensed attorneys who can review your trust online.</p>
         <p><strong>Estimated review time:</strong> 24–48 hours<br><strong>Estimated cost:</strong> ~$150 (compared to $500+ traditional legal fees)</p>
         <button class="btn-primary" style="padding:10px 16px" onclick="showToast('Attorney review waitlist opening soon.')">Join Waitlist</button>
       </div>
@@ -1454,37 +1612,57 @@
         </ul>
         <button class="btn-secondary" style="padding:10px 16px" onclick="showToast('Notarization prep checklist coming soon.')">Prepare for Notarization</button>
       </div>
-      <div id="result-summary" class="result-summary"></div>
-      <div id="continuity-summary" class="calc-result" style="margin-bottom:1rem;"></div>
-      <div class="doc-preview-wrap collapsed" id="doc-preview-wrap">
-        <div class="doc-content" id="doc-content"></div>
-        <div class="doc-fade"></div>
-        <div class="doc-gate-note">Full document available after download</div>
+
+      <div class="result-panels">
+        <div id="result-summary" class="result-summary"></div>
+        <div id="continuity-summary" class="calc-result"></div>
       </div>
-      <button class="doc-toggle" id="doc-toggle-btn" onclick="toggleFullDocument()">Show Full Document</button>
 
       <div class="continuity-wrap">
         <h5>Care Continuity Plan</h5>
         <p class="continuity-intro">Pet insurance often ends when the owner passes away. PawLegacy ensures continuous care funding beyond insurance limitations.</p>
         <div class="continuity-cards">
-          <div class="continuity-card">
-            <h6>1️⃣ Insurance Gap</h6>
-            <p>Pet insurance does not transfer automatically after the owner's death. Coverage may be lost when it is needed most.</p>
+          <div class="continuity-card gap">
+            <h6>Insurance Gap</h6>
+            <p>Pet insurance does not automatically transfer when ownership changes after incapacity or death.</p>
           </div>
-          <div class="continuity-card">
-            <h6>2️⃣ Trust Coverage</h6>
-            <p>Your pet trust fund ensures medical, food, and long-term care costs are always covered — even without insurance.</p>
+          <div class="continuity-card coverage">
+            <h6>Trust Coverage</h6>
+            <p>Your trust fund can continue paying core pet-care expenses during legal transition and caregiver handoff.</p>
           </div>
-          <div class="continuity-card">
-            <h6>3️⃣ Emergency Buffer</h6>
-            <p>Built-in contingency funds handle unexpected surgeries, chronic conditions, and aging-related care.</p>
+          <div class="continuity-card buffer">
+            <h6>Emergency Buffer</h6>
+            <p>Contingency reserves help cover urgent surgeries, medications, and aging-related care events.</p>
           </div>
         </div>
       </div>
+
+      <div class="document-metadata">
+        <h6>PawLegacy Pet Trust Planning Draft</h6>
+        <p id="doc-meta-subtitle">Prepared Pet Trust Draft — New York Planning Draft · For Attorney Review and Execution</p>
+        <div class="meta-grid">
+          <div><span>Prepared for</span><strong id="meta-owner">—</strong></div>
+          <div><span>State</span><strong id="meta-state">—</strong></div>
+          <div><span>Date generated</span><strong id="meta-date">—</strong></div>
+          <div><span>Draft status</span><strong id="meta-draft-status">Planning Draft</strong></div>
+          <div><span>Review status</span><strong id="meta-review-status">Attorney Review Pending</strong></div>
+          <div><span>Trust fund amount</span><strong id="meta-fund">—</strong></div>
+        </div>
+      </div>
+
+      <div class="doc-preview-wrap collapsed" id="doc-preview-wrap">
+        <div id="doc-preview-excerpt" class="doc-preview-excerpt"></div>
+        <div class="doc-content legal-doc-panel" id="doc-content"></div>
+        <div class="doc-fade"></div>
+        <div class="doc-gate-note">Full document available after download</div>
+      </div>
+      <button class="doc-toggle" id="doc-toggle-btn" onclick="toggleFullDocument()">Show Full Document</button>
+
       <div class="doc-actions">
-        <button class="btn-download" onclick="downloadDoc()">⬇ Download Document</button>
-        <button class="btn-pdf" onclick="downloadPdfDoc()">🧾 Download PDF</button>
-        <button class="btn-notarize" onclick="showToast('E-notarization service coming soon! Stay tuned.')">📋 Proceed to E-Notarization</button>
+        <button class="btn-download btn-secondary-strong" onclick="downloadDoc()">⬇ Download Document</button>
+        <button class="btn-pdf btn-secondary-strong" onclick="downloadPdfDoc()">🧾 Download PDF</button>
+        <button class="btn-notarize btn-primary-strong" onclick="showToast('E-notarization service coming soon! Stay tuned.')">📋 Proceed to E-Notarization</button>
+        <button class="btn-ghost" onclick="navigate('legal')">Legal Review</button>
       </div>
     </div>
   </div>
@@ -1866,10 +2044,86 @@ PawLegacy generated planning draft — prepared for attorney review and executio
 This document may be updated to reflect future changes in applicable law or the pet’s care requirements through the PawLegacy platform.`;
 }
 
+let generatedDocumentText = '';
+let generatedDocumentHTML = '';
+
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatComplianceBadge(state) {
+  return `✓ Structured from ${state} Law`;
+}
+
+function buildLegalDocumentHTML(docText, meta) {
+  const safe = escapeHtml(docText || '');
+  const sectionRegex = /(?:^|\n)([IVXLCDM]+)\.\s+([^\n]+)\n([\s\S]*?)(?=\n[IVXLCDM]+\.\s+[^\n]+\n|$)/g;
+  const sections = [];
+  let match;
+
+  while ((match = sectionRegex.exec(docText)) !== null) {
+    sections.push({
+      numeral: match[1],
+      title: match[2].trim(),
+      content: match[3].trim()
+    });
+  }
+
+  const structuredSections = sections.length ? sections.map(section => {
+    const lines = section.content.split('\n').filter(Boolean);
+    const parsedLines = lines.map(line => {
+      if (/^[A-Z]\.\s+/.test(line.trim())) {
+        return `<p class="legal-subsection"><strong>${escapeHtml(line.trim().slice(0, 2))}</strong> ${escapeHtml(line.trim().slice(2).trim())}</p>`;
+      }
+      return `<p>${escapeHtml(line.trim())}</p>`;
+    }).join('');
+    return `<section class="legal-section"><h4>${escapeHtml(section.numeral)}. ${escapeHtml(section.title)}</h4>${parsedLines}</section>`;
+  }).join('') : `<section class="legal-section"><h4>Document Text</h4><p>${safe.replace(/\n/g, '<br>')}</p></section>`;
+
+  return `
+    <div class="legal-headline">
+      <h3>PAWLEGACY PET TRUST PLANNING DRAFT</h3>
+      <p>Prepared Pet Trust Draft — ${escapeHtml(meta.state)} Planning Draft · For Attorney Review and Execution</p>
+    </div>
+    <div class="legal-notice">
+      <strong>COMPLIANCE NOTICE.</strong> This planning draft is designed for legal-tech workflow support and must be reviewed by licensed counsel before execution.
+      ${meta.state.toLowerCase() === 'new york' ? '<br>Structured for New York pet trust planning requirements under EPTL § 7-8.1.' : `<br>Structured for ${escapeHtml(meta.state)} pet trust planning requirements with jurisdiction-specific legal review required.`}
+    </div>
+    <div class="legal-meta">
+      <div><span>Prepared for</span><strong>${escapeHtml(meta.ownerFullName)}</strong></div>
+      <div><span>State / Jurisdiction</span><strong>${escapeHtml(meta.state)}</strong></div>
+      <div><span>Date generated</span><strong>${escapeHtml(meta.generatedDate)}</strong></div>
+      <div><span>Draft status</span><strong>Planning Draft — Not Executed</strong></div>
+      <div><span>Review status</span><strong>Attorney Review Pending</strong></div>
+      <div><span>Trust fund</span><strong>${escapeHtml(meta.fundFormatted)}</strong></div>
+    </div>
+    ${structuredSections}
+    <div class="legal-signatures">
+      <div class="sig-col">
+        <strong>Grantor / Owner Signature</strong>
+        <div class="sig-line"></div>
+        <div>Printed Name: ${escapeHtml(meta.ownerFullName)}</div>
+        <div>Date: ____________________</div>
+      </div>
+      <div class="sig-col">
+        <strong>Trustee Acknowledgment</strong>
+        <div class="sig-line"></div>
+        <div>Printed Name: ${escapeHtml(meta.trustee || '____________________')}</div>
+        <div>Date: ____________________</div>
+      </div>
+    </div>
+  `;
+}
+
 function renderResultSummary(fundAmt) {
   const amount = Number(fundAmt || 0);
   const formatted = amount ? `$${amount.toLocaleString()}` : 'TBD';
-  document.getElementById('result-summary').innerHTML = `Recommended Trust Fund: <strong>${formatted}</strong><br>Includes:<br>✔ Lifetime care cost<br>✔ Medical contingency buffer<br>✔ Insurance gap coverage`;
+  document.getElementById('result-summary').innerHTML = `<strong>Recommended Trust Fund</strong><div style="font-family:'Playfair Display',serif;font-size:1.45rem;color:var(--bark);margin:0.25rem 0 0.45rem;">${formatted}</div>Includes:<br>✔ Lifetime care cost<br>✔ Medical contingency buffer<br>✔ Insurance gap coverage`;
 }
 
 function renderContinuitySummary(fundAmt, oversightEnabled, primaryCaregiver, trustee) {
@@ -1902,6 +2156,7 @@ async function generateTrust() {
   const oversightFrequency = document.getElementById('oversight-frequency').value;
   const finalDisposition = document.getElementById('final-disposition').value;
   const ownerFullName = `${first} ${last}`.trim();
+  const generatedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   if (!first || !last || !state || !trustee || !primaryCaregiver) {
     showToast('Please fill in your name, state, trustee, and primary caregiver.');
@@ -1953,7 +2208,22 @@ async function generateTrust() {
       oversightFrequency,
       finalDisposition
     });
-    document.getElementById('doc-content').textContent = localDoc || buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt);
+    generatedDocumentText = localDoc || buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt);
+    const petNames = pets.map(p => p.name).join(', ');
+    const fundFormatted = Number(fundAmt || 0) ? `$${Number(fundAmt).toLocaleString()}` : 'TBD';
+    const meta = { ownerFullName, state, trustee, generatedDate, fundFormatted };
+    generatedDocumentHTML = buildLegalDocumentHTML(generatedDocumentText, meta);
+    document.getElementById('doc-content').innerHTML = generatedDocumentHTML;
+    document.getElementById('doc-preview-excerpt').textContent = generatedDocumentText.split('\n').filter(Boolean).slice(0, 6).join('  ');
+    document.getElementById('result-compliance-badge').textContent = formatComplianceBadge(state);
+    document.getElementById('result-dashboard-title').textContent = `${first}'s Pet Trust Dashboard`;
+    document.getElementById('result-expert-message').innerHTML = `<strong>Trust Expert:</strong> ${first}, your trust draft is ready for review. Care instructions for ${petNames || 'your pets'} and trustee details have been recorded — proceed to attorney review when ready.`;
+    document.getElementById('result-draft-notice').innerHTML = `<strong>Draft status: Planning Draft — Not Executed.</strong><br>Structured for ${state} pet trust planning. Final enforceability depends on attorney review, proper execution, notarization, and funding.`;
+    document.getElementById('doc-meta-subtitle').textContent = `Prepared Pet Trust Draft — ${state} Planning Draft · For Attorney Review and Execution`;
+    document.getElementById('meta-owner').textContent = ownerFullName;
+    document.getElementById('meta-state').textContent = state;
+    document.getElementById('meta-date').textContent = generatedDate;
+    document.getElementById('meta-fund').textContent = fundFormatted;
     renderResultSummary(fundAmt);
     renderContinuitySummary(fundAmt, oversightEnabled, primaryCaregiver, trustee);
     document.getElementById('doc-output').style.display = 'block';
@@ -1967,7 +2237,7 @@ async function generateTrust() {
 
 // Download document
 function downloadDoc() {
-  const content = document.getElementById('doc-content').textContent;
+  const content = generatedDocumentText || document.getElementById('doc-content').textContent;
   const blob = new Blob([content], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1977,7 +2247,7 @@ function downloadDoc() {
 }
 
 function downloadPdfDoc() {
-  const content = document.getElementById('doc-content').textContent || 'No document generated yet.';
+  const content = generatedDocumentHTML || '<p>No document generated yet.</p>';
   const printWin = window.open('', '_blank');
   if (!printWin) {
     showToast('Popup blocked. Please allow popups for PDF export.');
@@ -1993,15 +2263,20 @@ function downloadPdfDoc() {
           h1 { font-size: 17pt; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.01em; }
           .subtitle { font-size: 12pt; color:#333; margin-bottom: 10px; font-weight: 700; }
           .legal-box { border:1px solid #888; background:#f7f7f7; padding:8px 10px; font-size:10pt; margin-bottom: 12px; }
-          pre { white-space: pre-wrap; font-family: 'Times New Roman', Georgia, serif; font-size: 11.5pt; margin:0; line-height:1.35; text-indent: 0.5in; }
+          .doc-wrap { font-family: 'Times New Roman', Georgia, serif; font-size: 11.2pt; line-height: 1.38; }
           .note { font-size: 9.5pt; color: #555; margin-top: 16px; border-top:1px solid #ccc; padding-top:8px; }
+          .legal-headline { text-align:center; border-bottom:1px solid #ccc; margin-bottom:8px; padding-bottom:6px; }
+          .legal-meta { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+          .legal-meta td { border:1px solid #ccc; padding:4px 6px; font-size:10pt; }
+          .legal-section { margin-bottom: 10px; }
+          .legal-signatures { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+          .sig-line { border-bottom:1px solid #222; height:22px; margin:10px 0 4px; }
         </style>
       </head>
       <body>
         <h1>PawLegacy Pet Trust Agreement</h1>
-        <div class="subtitle">Prepared Pet Trust Draft · New York Planning Draft · For Attorney Review and Execution</div>
-        <div class="legal-box">This planning draft is designed for legal-tech workflow support and must be reviewed by licensed counsel before execution.</div>
-        <pre>${content.replace(/</g, '&lt;')}</pre>
+        <div class="subtitle">Prepared Pet Trust Draft · Planning Draft · For Attorney Review and Execution</div>
+        <div class="doc-wrap">${content}</div>
         <div class="note">PawLegacy planning draft footer · Use your browser's “Save as PDF” option in the print dialog.</div>
       </body>
     </html>
@@ -2054,7 +2329,7 @@ function toggleFullDocument() {
   const wrap = document.getElementById('doc-preview-wrap');
   const btn = document.getElementById('doc-toggle-btn');
   const collapsed = wrap.classList.toggle('collapsed');
-  btn.textContent = collapsed ? 'Show Full Document' : 'Hide Full Document';
+  btn.textContent = collapsed ? 'Show Full Document' : 'Hide Document';
 }
 
 function showActivationStep(step) {
