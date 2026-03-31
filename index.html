@@ -534,6 +534,52 @@
     position: relative;
     box-shadow: var(--shadow);
   }
+  .doc-preview-wrap {
+    position: relative;
+  }
+  .doc-preview-wrap.collapsed .doc-content {
+    max-height: 320px;
+    overflow: hidden;
+  }
+  .doc-fade {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(180deg, rgba(255,253,249,0) 0%, rgba(255,253,249,0.96) 65%, rgba(255,253,249,1) 100%);
+    border-bottom-left-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
+    pointer-events: none;
+  }
+  .doc-gate-note {
+    display: none;
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-mid);
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+  }
+  .doc-preview-wrap.collapsed .doc-fade,
+  .doc-preview-wrap.collapsed .doc-gate-note { display: block; }
+  .doc-toggle {
+    margin-top: 0.55rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--bark);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
   .plan-card.featured {
     border-color: var(--amber);
     background: var(--amber-pale);
@@ -1077,6 +1123,7 @@
   }
 
   @media print {
+    @page { margin: 1in; }
     body { background: #fff; color: #111; }
     nav, .doc-actions, .toast, .modal-overlay, .loading-state, .mascot-inline { display: none !important; }
     .doc-output {
@@ -1089,8 +1136,10 @@
       border: none;
       padding: 0;
       white-space: pre-wrap;
-      font-size: 12pt;
-      line-height: 1.7;
+      font-family: 'Times New Roman', Georgia, serif;
+      font-size: 11.5pt;
+      line-height: 1.35;
+      text-indent: 0.5in;
     }
     .result-summary, #continuity-summary, .continuity-wrap { display: none !important; }
   }
@@ -1385,8 +1434,8 @@
       </div>
       <div class="exec-flow" aria-label="Execution flow">
         <div class="exec-step completed"><div class="n">Step 1</div><div class="t">Draft Generated</div></div>
-        <div class="exec-step clickable" id="step-review" onclick="showActivationStep('review')"><div class="n">Step 2</div><div class="t">Attorney Review (Online)</div></div>
-        <div class="exec-step clickable" id="step-notary" onclick="showActivationStep('notary')"><div class="n">Step 3</div><div class="t">E-Notarization</div></div>
+        <div class="exec-step clickable" id="step-review" onclick="showActivationStep('review')"><div class="n">Step 2</div><div class="t">Attorney Review (Pending)</div></div>
+        <div class="exec-step clickable" id="step-notary" onclick="showActivationStep('notary')"><div class="n">Step 3</div><div class="t">Notarization (Locked)</div></div>
         <div class="exec-step"><div class="n">Step 4</div><div class="t">Trust Activation</div></div>
       </div>
       <div class="activation-panel" id="activation-review">
@@ -1407,7 +1456,12 @@
       </div>
       <div id="result-summary" class="result-summary"></div>
       <div id="continuity-summary" class="calc-result" style="margin-bottom:1rem;"></div>
-      <div class="doc-content" id="doc-content"></div>
+      <div class="doc-preview-wrap collapsed" id="doc-preview-wrap">
+        <div class="doc-content" id="doc-content"></div>
+        <div class="doc-fade"></div>
+        <div class="doc-gate-note">Full document available after download</div>
+      </div>
+      <button class="doc-toggle" id="doc-toggle-btn" onclick="toggleFullDocument()">Show Full Document</button>
 
       <div class="continuity-wrap">
         <h5>Care Continuity Plan</h5>
@@ -1707,6 +1761,7 @@ function buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt)
 }
 
 function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee, primaryCaregiver, backupCaregiver, pets, fundAmt, diet, vet, special, remainderBeneficiary, oversightEnabled, oversightFrequency, finalDisposition }) {
+  const indent = '     ';
   const generatedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const isNY = state.toLowerCase().includes('new york');
   const nyComplianceLine = isNY
@@ -1739,63 +1794,76 @@ ATTORNEY REVIEW RECOMMENDATION
 This draft should be reviewed by a licensed New York attorney prior to execution. Final enforceability depends on proper execution, notarization, funding, and legal review.
 
 I. Declaration and Purpose
-I, ${ownerFullName}, establish this Pet Trust planning draft to provide continuity of care for the animal beneficiary(ies) identified below, and to guide final attorney-reviewed execution documents.
+${indent}I, ${ownerFullName}, as Grantor, hereby establish this Pet Trust under the laws of the State of ${state}.
+${indent}It is my intent that this trust be legally enforceable to the fullest extent permitted under New York law, including EPTL § 7-8.1.
+${indent}This document was generated on ${generatedDate} and reflects current New York pet trust planning standards at the time of generation.
 
 II. Identification of Pets
 ${petClauses}
 
 III. Appointment and Duties of Trustee
-I appoint ${trustee} as Primary Trustee, with fiduciary responsibility to administer trust assets solely for the benefit of the covered pet(s). If unable or unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume authority subject to final execution documents.
+${indent}I appoint ${trustee} as Primary Trustee, with fiduciary responsibility to administer trust assets solely for the benefit of the covered pet(s). If unable or unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume authority subject to final execution documents.
+${indent}The Trustee shall act in a fiduciary capacity and administer the trust solely in the best interests of the designated pet beneficiary.
 
 IV. Caregiver Designation
-Primary daily caregiver: ${primaryCaregiver || 'designated by trustee'}.
-Backup caregiver: ${backupCaregiver || 'to be designated by trustee if needed'}.
-Trustee may authorize temporary professional care where medically necessary or in the best interest of the covered pet(s).
+${indent}Primary daily caregiver: ${primaryCaregiver || 'designated by trustee'}.
+${indent}Backup caregiver: ${backupCaregiver || 'to be designated by trustee if needed'}.
+${indent}Trustee may authorize temporary professional care where medically necessary or in the best interest of the covered pet(s).
 
 V. Trust Funding and Distribution
-Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Permitted uses include nutrition, routine and emergency veterinary treatment, medication, grooming, boarding, behavioral support, transportation, and end-of-life care. Trustee shall maintain reasonable records of disbursements.
+${indent}Initial trust funding is set at $${Number(fundAmt || 0).toLocaleString() || 'TBD'}. Permitted uses include nutrition, routine and emergency veterinary treatment, medication, grooming, boarding, behavioral support, transportation, and end-of-life care. Trustee shall maintain reasonable records of disbursements.
 
 VI. Care Instructions
-- Diet and feeding: ${diet || 'Follow veterinarian-recommended daily feeding and hydration schedule.'}
-- Veterinary plan: ${vet || 'Maintain annual preventive exams, vaccinations, and prompt treatment of illness/injury.'}
-- Special care notes: ${special || 'Maintain familiar routine, enrichment, and a low-stress home environment.'}
+${indent}A. Diet and Feeding. ${diet || 'Follow veterinarian-recommended daily feeding and hydration schedule.'}
+${indent}B. Veterinary Care. ${vet || 'Maintain annual preventive exams, vaccinations, and prompt treatment of illness/injury.'}
+${indent}C. Special Care Provisions. ${special || 'Maintain familiar routine, enrichment, and a low-stress home environment.'}
 
 VII. Trustee Compensation and Oversight
-Trustee may receive reasonable reimbursement for documented pet-care expenses and reasonable compensation as permitted by applicable law.
+${indent}Trustee may receive reasonable reimbursement for documented pet-care expenses and reasonable compensation as permitted by applicable law.
 
 VIII. Remainder Distribution
-Upon termination of the trust, any remaining balance shall be distributed to ${remainderBeneficiary || 'the owner-designated beneficiary in estate documents'}.
+${indent}Upon termination of the trust, any remaining balance shall be distributed to ${remainderBeneficiary || 'the owner-designated beneficiary in estate documents'}.
 
 IX. Care Oversight
-${oversightEnabled ? `Periodic care inspections are required on a ${oversightFrequency} basis, with compliance notes retained by the trustee.` : 'No periodic inspection schedule is mandated; trustee remains accountable for prudent care and expenditure records.'}
+${indent}${oversightEnabled ? `Periodic care inspections are required on a ${oversightFrequency} basis, with compliance notes retained by the trustee.` : 'No periodic inspection schedule is mandated; trustee remains accountable for prudent care and expenditure records.'}
 
 X. Final Disposition of Pet
-Owner instruction for final disposition: ${finalDisposition}.
+${indent}Owner instruction for final disposition: ${finalDisposition}.
 
 XI. Trust Termination
 ${terminationText}
 
 XII. Governing Law
-This draft is prepared for review under applicable ${state} trust and estate law, including New York pet trust planning standards where relevant. Final governing-law language must be confirmed by licensed counsel in the executed document set.
+${indent}This draft is prepared for review under applicable ${state} trust and estate law, including New York pet trust planning standards where relevant. Final governing-law language must be confirmed by licensed counsel in the executed document set.
+${indent}This trust is intended to be enforceable by a court of competent jurisdiction, and any interested party may petition for its enforcement.
 
 XIII. Execution Requirements
-Prior to execution, this draft requires: (a) licensed attorney review, (b) valid signatures, (c) notarization and any witness formalities required by applicable law, and (d) confirmation of trust funding mechanism.
+${indent}A. Licensed attorney review.
+${indent}B. Valid signatures.
+${indent}C. Notarization and any witness formalities required by applicable law.
+${indent}D. Confirmation of trust funding mechanism.
 
 XIV. Execution Checklist
-- Confirm trustee and caregiver acceptance
-- Obtain attorney review
-- Sign and notarize
-- Confirm trust funding
-- Store signed copy and provide copies to trustee/caregiver
+${indent}A. Confirm trustee and caregiver acceptance.
+${indent}B. Obtain attorney review.
+${indent}C. Sign and notarize.
+${indent}D. Confirm trust funding.
+${indent}E. Store signed copies and provide copies to trustee/caregiver.
 
-XV. Signatures
+XV. General Provisions
+${indent}If any provision of this trust is deemed invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+
+IN WITNESS WHEREOF, the undersigned execute this planning draft for legal review and final execution preparation.
+
+XVI. Signatures
 Owner Signature: ____________________
 Date: ____________________
 Trustee Acknowledgment: ____________________
 Date: ____________________
 
 END NOTE
-PawLegacy generated planning draft — prepared for attorney review and execution workflow.`;
+PawLegacy generated planning draft — prepared for attorney review and execution workflow.
+This document may be updated to reflect future changes in applicable law or the pet’s care requirements through the PawLegacy platform.`;
 }
 
 function renderResultSummary(fundAmt) {
@@ -1855,6 +1923,8 @@ async function generateTrust() {
   btn.disabled = true;
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('doc-output').style.display = 'none';
+  document.getElementById('doc-preview-wrap').classList.add('collapsed');
+  document.getElementById('doc-toggle-btn').textContent = 'Show Full Document';
   document.getElementById('activation-review').classList.remove('show');
   document.getElementById('activation-notary').classList.remove('show');
   document.getElementById('step-review').classList.remove('active');
@@ -1918,13 +1988,13 @@ function downloadPdfDoc() {
       <head>
         <title>PawLegacy Pet Trust Document</title>
         <style>
-          @page { margin: 0.8in; }
-          body { font-family: 'Times New Roman', Georgia, serif; color:#111; line-height:1.75; }
-          h1 { font-size: 20px; margin-bottom: 8px; letter-spacing: 0.02em; }
-          .subtitle { font-size: 11pt; color:#444; margin-bottom: 12px; }
-          .legal-box { border:1px solid #aaa; background:#f7f7f7; padding:8px 10px; font-size:10.5pt; margin-bottom: 12px; }
-          pre { white-space: pre-wrap; font-family: 'Times New Roman', Georgia, serif; font-size: 12pt; margin:0; }
-          .note { font-size: 10pt; color: #555; margin-top: 22px; border-top:1px solid #ccc; padding-top:8px; }
+          @page { margin: 1in; }
+          body { font-family: 'Times New Roman', Georgia, serif; color:#111; line-height:1.35; max-width: 7.2in; margin: 0 auto; }
+          h1 { font-size: 17pt; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.01em; }
+          .subtitle { font-size: 12pt; color:#333; margin-bottom: 10px; font-weight: 700; }
+          .legal-box { border:1px solid #888; background:#f7f7f7; padding:8px 10px; font-size:10pt; margin-bottom: 12px; }
+          pre { white-space: pre-wrap; font-family: 'Times New Roman', Georgia, serif; font-size: 11.5pt; margin:0; line-height:1.35; text-indent: 0.5in; }
+          .note { font-size: 9.5pt; color: #555; margin-top: 16px; border-top:1px solid #ccc; padding-top:8px; }
         </style>
       </head>
       <body>
@@ -1978,6 +2048,13 @@ function generateLegalReport() {
   const remaining = checks.length - checked;
   document.getElementById('legal-report').innerHTML =
     `Readiness Score: <strong>${score}%</strong><br>State: ${state}<br>Notarization: ${notary}<br>${remaining === 0 ? '✅ Ready to finalize.' : `Next: complete ${remaining} more checklist item(s).`}`;
+}
+
+function toggleFullDocument() {
+  const wrap = document.getElementById('doc-preview-wrap');
+  const btn = document.getElementById('doc-toggle-btn');
+  const collapsed = wrap.classList.toggle('collapsed');
+  btn.textContent = collapsed ? 'Show Full Document' : 'Hide Full Document';
 }
 
 function showActivationStep(step) {
