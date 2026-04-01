@@ -1625,7 +1625,7 @@
 
       <div class="document-metadata">
         <h6>PawLegacy Pet Trust Planning Draft</h6>
-        <p id="doc-meta-subtitle">Prepared Pet Trust Draft — New York Planning Draft · For Attorney Review and Execution</p>
+        <p id="doc-meta-subtitle">New York Pet Trust Planning Draft · Prepared for Attorney Review and Final Execution</p>
         <div class="meta-grid">
           <div><span>Prepared for</span><strong id="meta-owner">—</strong></div>
           <div><span>State</span><strong id="meta-state">—</strong></div>
@@ -1900,8 +1900,8 @@ function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee,
   const generatedDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const isNY = state.toLowerCase().includes('new york');
   const nyComplianceLine = isNY
-    ? 'Structured for New York pet trust planning requirements and prepared for review under applicable New York trust and estate law.'
-    : `Structured for ${state} pet trust planning workflow with New York-style legal drafting conventions; state-specific attorney review is required.`;
+    ? 'Prepared in accordance with New York pet trust planning principles, including EPTL § 7-8.1, for attorney review prior to execution.'
+    : `Prepared as a ${state} state-structured pet trust planning draft using New York-style drafting conventions; jurisdiction-specific legal review is required.`;
   const petClauses = pets.map((pet, idx) =>
     `${idx + 1}. ${pet.name} (${pet.breed}, age ${pet.age}) shall be cared for in accordance with the care protocol in Section V.`
   ).join('\n');
@@ -1911,8 +1911,8 @@ function buildLocalAIDocument({ ownerFullName, state, trustee, successorTrustee,
     : `The trust terminates upon the death of the final surviving named pet, with disposition of any remainder governed by owner estate instructions.`;
 
   return `PAWLEGACY PET TRUST PLANNING DRAFT
-Prepared Pet Trust Draft — New York Planning Draft
-For Attorney Review and Execution
+New York Pet Trust Planning Draft
+Prepared for Attorney Review and Final Execution
 
 DOCUMENT METADATA
 - Prepared for: ${ownerFullName}
@@ -1923,7 +1923,7 @@ DOCUMENT METADATA
 
 COMPLIANCE NOTICE
 ${nyComplianceLine}
-Designed to support a New York-compliant pet trust workflow, but not a substitute for legal advice or final legal execution.
+This planning draft supports legal preparation workflow and is not a substitute for legal advice or final execution formalities.
 
 ATTORNEY REVIEW RECOMMENDATION
 This draft should be reviewed by a licensed New York attorney prior to execution. Final enforceability depends on proper execution, notarization, funding, and legal review.
@@ -1937,7 +1937,7 @@ II. Identification of Pets
 ${petClauses}
 
 III. Appointment and Duties of Trustee
-${indent}I appoint ${trustee} as Primary Trustee, with fiduciary responsibility to administer trust assets solely for the benefit of the covered pet(s). If unable or unwilling to serve, ${successorTrustee || 'the successor trustee named by owner'} shall assume authority subject to final execution documents.
+${indent}I appoint ${trustee} as Primary Trustee, with fiduciary responsibility to administer trust assets solely for the benefit of the covered pet(s). If unable or unwilling to serve, ${successorTrustee || 'the successor trustee designated by the owner'} shall assume authority, subject to final executed documents.
 ${indent}The Trustee shall act in a fiduciary capacity and administer the trust solely in the best interests of the designated pet beneficiary.
 
 IV. Caregiver Designation
@@ -1969,7 +1969,7 @@ XI. Trust Termination
 ${terminationText}
 
 XII. Governing Law
-${indent}This draft is prepared for review under applicable ${state} trust and estate law, including New York pet trust planning standards where relevant. Final governing-law language must be confirmed by licensed counsel in the executed document set.
+${indent}This planning draft is prepared for review under applicable ${state} trust and estate law and New York pet trust planning principles. Final governing-law provisions must be confirmed by licensed counsel in the executed document set.
 ${indent}This trust is intended to be enforceable by a court of competent jurisdiction, and any interested party may petition for its enforcement.
 
 XIII. Execution Requirements
@@ -1991,14 +1991,11 @@ ${indent}If any provision of this trust is deemed invalid or unenforceable, the 
 IN WITNESS WHEREOF, the undersigned execute this planning draft for legal review and final execution preparation.
 
 XVI. Signatures
-Owner Signature: ____________________
-Date: ____________________
-Trustee Acknowledgment: ____________________
-Date: ____________________
+${indent}Signature blocks are provided below for grantor and trustee acknowledgment at final execution.
 
 END NOTE
-PawLegacy generated planning draft — prepared for attorney review and execution workflow.
-This document may be updated to reflect future changes in applicable law or the pet’s care requirements through the PawLegacy platform.`;
+PawLegacy planning draft prepared for attorney review and execution workflow.
+This planning draft may be revised prior to final legal execution.`;
 }
 
 let generatedDocumentText = '';
@@ -2049,11 +2046,11 @@ function buildLegalDocumentHTML(docText, meta) {
   return `
     <div class="legal-headline">
       <h3>PAWLEGACY PET TRUST PLANNING DRAFT</h3>
-      <p>Prepared Pet Trust Draft — ${escapeHtml(meta.state)} Planning Draft · For Attorney Review and Execution</p>
+      <p>${escapeHtml(meta.state)} Pet Trust Planning Draft · Prepared for Attorney Review and Final Execution</p>
     </div>
     <div class="legal-notice">
-      <strong>COMPLIANCE NOTICE.</strong> This planning draft is designed for legal-tech workflow support and must be reviewed by licensed counsel before execution.
-      ${meta.state.toLowerCase() === 'new york' ? '<br>Structured for New York pet trust planning requirements under EPTL § 7-8.1.' : `<br>Structured for ${escapeHtml(meta.state)} pet trust planning requirements with jurisdiction-specific legal review required.`}
+      <strong>COMPLIANCE NOTICE.</strong> This planning draft is prepared for legal workflow support and must be reviewed by licensed counsel before execution.
+      ${meta.state.toLowerCase() === 'new york' ? '<br>Prepared in accordance with New York pet trust planning principles, including EPTL § 7-8.1.' : `<br>Prepared as a ${escapeHtml(meta.state)} state-structured planning draft; jurisdiction-specific legal review remains required.`}
     </div>
     <table class="legal-meta" role="presentation" aria-label="Document metadata">
       <tr><th>Prepared for</th><td>${escapeHtml(meta.ownerFullName)}</td></tr>
@@ -2068,13 +2065,13 @@ function buildLegalDocumentHTML(docText, meta) {
       <div class="sig-col">
         <strong>Grantor / Owner Signature</strong>
         <div class="sig-line"></div>
-        <div>Printed Name: ${escapeHtml(meta.ownerFullName)}</div>
+        <div>Name: ${escapeHtml(meta.ownerFullName)}</div>
         <div>Date: ____________________</div>
       </div>
       <div class="sig-col">
         <strong>Trustee Acknowledgment</strong>
         <div class="sig-line"></div>
-        <div>Printed Name: ${escapeHtml(meta.trustee || '____________________')}</div>
+        <div>Name: ${escapeHtml(meta.trustee || '____________________')}</div>
         <div>Date: ____________________</div>
       </div>
     </div>
@@ -2198,7 +2195,7 @@ async function generateTrust() {
     document.getElementById('result-dashboard-title').textContent = `${first}'s Pet Trust Dashboard`;
     document.getElementById('result-expert-message').innerHTML = `<strong>Trust Expert:</strong> ${first}, your trust draft is ready for review. Care instructions for ${petNames || 'your pets'} and trustee details have been recorded — proceed to attorney review when ready.`;
     document.getElementById('result-draft-notice').innerHTML = `<strong>Draft status: Planning Draft — Not Executed.</strong><br>Structured for ${state} pet trust planning. Final enforceability depends on attorney review, proper execution, notarization, and funding.`;
-    document.getElementById('doc-meta-subtitle').textContent = `Prepared Pet Trust Draft — ${state} Planning Draft · For Attorney Review and Execution`;
+    document.getElementById('doc-meta-subtitle').textContent = `${state} Pet Trust Planning Draft · Prepared for Attorney Review and Final Execution`;
     document.getElementById('meta-owner').textContent = ownerFullName;
     document.getElementById('meta-state').textContent = state;
     document.getElementById('meta-date').textContent = generatedDate;
