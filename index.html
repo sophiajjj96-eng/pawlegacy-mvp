@@ -1170,17 +1170,14 @@
   @media print {
     @page { margin: 1in; }
     body { background: #fff; color: #111; }
+    .page { min-height: auto !important; padding-top: 0 !important; }
     nav, .doc-actions, .toast, .loading-state, .mascot-inline, .result-hero, .result-title-block, .workflow-rail, .result-panels, .continuity-wrap, .document-metadata, .doc-toggle, .doc-preview-excerpt, .doc-fade, .doc-gate-note, .dashboard-badges, .activation-panel { display: none !important; }
-    body.print-export-active * { visibility: hidden !important; }
-    body.print-export-active #print-export-root,
-    body.print-export-active #print-export-root * { visibility: visible !important; }
+    body.print-export-active > * { display: none !important; }
     body.print-export-active #print-export-root {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      padding: 0;
-      margin: 0;
+      position: static;
+      width: auto;
+      padding: 0 !important;
+      margin: 0 !important;
       display: block !important;
     }
     .doc-output {
@@ -1214,6 +1211,7 @@
       margin: 0 auto;
       padding: 0;
     }
+    #print-export-root .legal-doc-panel:empty { display:none !important; }
     #print-export-root .legal-headline { margin-bottom: 12pt; }
     #print-export-root .legal-section,
     #print-export-root .legal-notice,
@@ -1830,6 +1828,17 @@ function getPrimaryPetName() {
   return document.querySelector('.pet-name')?.value?.trim() || 'your pet';
 }
 
+function collectPetData() {
+  const petRows = [...document.querySelectorAll('.pet-row')];
+  return petRows.map((row, i) => {
+    const name = row.querySelector('.pet-name')?.value?.trim() || `Pet ${i + 1}`;
+    const breed = row.querySelector('.pet-breed')?.value?.trim() || 'Unknown breed';
+    const rawAge = row.querySelector('.pet-age')?.value ?? '';
+    const age = rawAge !== '' ? String(rawAge).trim() : 'Unknown age';
+    return { name, breed, age };
+  });
+}
+
 function updateLivePreview() {
   const petName = getPrimaryPetName();
   const amount = Number(document.getElementById('fund-amount')?.value || 0);
@@ -2133,16 +2142,9 @@ async function generateTrust() {
     return;
   }
 
-  const petRows = document.querySelectorAll('.pet-row');
-  if (petRows.length === 0) { showToast('Please add at least one pet.'); return; }
-
-  let petsText = '';
-  petRows.forEach((row, i) => {
-    const name = row.querySelector('.pet-name').value || `Pet ${i+1}`;
-    const breed = row.querySelector('.pet-breed').value || 'Unknown breed';
-    const age = row.querySelector('.pet-age').value || 'Unknown age';
-    petsText += `\n- ${name} (${breed}, ${age} years old)`;
-  });
+  const pets = collectPetData();
+  if (pets.length === 0) { showToast('Please add at least one pet.'); return; }
+  const petsText = pets.map(p => `\n- ${p.name} (${p.breed}, ${p.age} years old)`).join('');
 
   const btn = document.getElementById('gen-btn');
   btn.disabled = true;
@@ -2157,12 +2159,6 @@ async function generateTrust() {
 
   try {
     await runGenerationSequence(state);
-
-    const pets = [...petRows].map((row, i) => ({
-      name: row.querySelector('.pet-name').value || `Pet ${i+1}`,
-      breed: row.querySelector('.pet-breed').value || 'Unknown breed',
-      age: row.querySelector('.pet-age').value || 'Unknown age'
-    }));
     const localDoc = buildLocalAIDocument({
       ownerFullName,
       state,
@@ -2181,6 +2177,17 @@ async function generateTrust() {
       finalDisposition
     });
     generatedDocumentText = localDoc || buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt);
+    const ageAudit = pets.map(p => {
+      const ageMatch = generatedDocumentText.match(new RegExp(`${p.name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')} \\(${p.breed.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}, age ([^)]+)\\)`));
+      return { pet: p.name, inputAge: p.age, renderedAge: ageMatch ? ageMatch[1] : 'not found' };
+    });
+    console.table(ageAudit);
+    const ageMismatch = ageAudit.find(a => a.inputAge !== a.renderedAge && a.renderedAge !== 'not found' && a.inputAge !== 'Unknown age');
+    if (ageMismatch) {
+      console.warn('[PawLegacy] Pet age mismatch detected:', ageMismatch);
+    } else {
+      console.debug('[PawLegacy] Pet age integrity check passed.', ageAudit);
+    }
     const petNames = pets.map(p => p.name).join(', ');
     const fundFormatted = Number(fundAmt || 0) ? `$${Number(fundAmt).toLocaleString()}` : 'TBD';
     const meta = { ownerFullName, state, trustee, generatedDate, fundFormatted };
