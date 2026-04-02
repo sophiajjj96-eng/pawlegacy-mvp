@@ -605,6 +605,99 @@
     color: var(--text-mid);
     line-height: 1.6;
   }
+  .calc-result.planning-screen {
+    background: #fffdfa;
+    border: 1px solid #ddd4c8;
+    box-shadow: var(--shadow);
+  }
+  .calc-headline {
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+  }
+  .calc-range {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: var(--bark);
+    margin-bottom: 0.3rem;
+  }
+  .calc-support {
+    color: var(--text-mid);
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+  .calc-mini-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+    margin-bottom: 0.85rem;
+  }
+  .calc-mini-card {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.5rem 0.55rem;
+  }
+  .calc-mini-card span {
+    display: block;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    margin-bottom: 0.2rem;
+  }
+  .calc-mini-card strong { font-size: 0.86rem; color: var(--bark); }
+  .calc-block-title {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-light);
+    margin: 0.7rem 0 0.28rem;
+  }
+  .calc-factors {
+    margin: 0 0 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+  }
+  .calc-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-bottom: 1px solid #eee7db;
+    padding: 0.28rem 0;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+  }
+  .calc-breakdown-row strong { color: var(--bark); }
+  .calc-why {
+    margin-top: 0.55rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #e8dfd3;
+    background: #fff;
+    border-radius: 9px;
+    color: var(--text-mid);
+    font-size: 0.79rem;
+  }
+  .calc-actions {
+    margin-top: 0.72rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .calc-actions button {
+    border-radius: 999px;
+    border: 1px solid transparent;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .calc-actions .primary { background: var(--bark); color: #fff; }
+  .calc-actions .secondary { background: #fff; border-color: var(--border); color: var(--bark); }
+  .calc-actions .link { background: transparent; border: none; color: var(--text-light); text-decoration: underline; padding-left: 0; }
   .result-summary {
     background: #f4faf4;
     color: var(--bark);
@@ -1151,6 +1244,7 @@
     .result-hero { flex-direction: column; }
     .workflow-rail { grid-template-columns: 1fr 1fr; }
     .result-panels { grid-template-columns: 1fr; }
+    .calc-mini-cards { grid-template-columns: 1fr; }
     .meta-grid { grid-template-columns: 1fr 1fr; }
     .continuity-cards { grid-template-columns: 1fr; }
     .legal-signatures { grid-template-columns: 1fr; }
@@ -1374,32 +1468,40 @@
 
     <div class="form-card">
       <h3>Care Cost Calculator</h3>
-      <p class="field-help" style="margin-top:-0.5rem;margin-bottom:0.8rem;">Use this estimate to choose a reasonable trust fund amount before generating your document.</p>
+      <p class="field-help" style="margin-top:-0.5rem;margin-bottom:0.8rem;">Estimate a practical trust fund recommendation based on typical lifetime care costs for dogs and cats, adjusted by age and care-risk profile.</p>
       <div class="mascot-inline" style="margin-top:0;margin-bottom:0.8rem;">
         <img class="mascot-img" src="images/mascot-guide.png" alt="Calculator guide mascot">
         <div class="mascot-bubble" id="mascot-dynamic-msg">Start with a realistic care estimate.</div>
       </div>
       <div class="form-grid">
         <div class="form-group">
-          <label>Pet Type Profile</label>
+          <label>Pet Type</label>
           <select id="calc-pet-type">
-            <option value="">Select species...</option>
-            <option value="golden retriever">Golden Retriever</option>
-            <option value="labrador">Labrador</option>
-            <option value="small dog">Small Dog</option>
-            <option value="cat">Cat</option>
-            <option value="rabbit">Rabbit</option>
-            <option value="bird">Bird / Parrot</option>
-            <option value="senior dog">Senior Dog</option>
+            <option value="">Select pet type...</option>
+            <optgroup label="Dog">
+              <option value="dog-small">Small Dog (under ~20 lbs)</option>
+              <option value="dog-medium">Medium Dog (20–50 lbs)</option>
+              <option value="dog-large">Large Dog (50+ lbs)</option>
+              <option value="dog-senior">Senior Dog</option>
+            </optgroup>
+            <optgroup label="Cat">
+              <option value="cat-indoor">Indoor Cat</option>
+              <option value="cat-outdoor">Outdoor Cat</option>
+              <option value="cat-senior">Senior Cat</option>
+            </optgroup>
           </select>
         </div>
         <div class="form-group">
-          <label>Input Budget ($)</label>
-          <input type="number" id="calc-budget" placeholder="e.g. 5000">
+          <label>Pet Age (years)</label>
+          <input type="number" id="calc-age" placeholder="e.g. 5" min="0" max="40">
+        </div>
+        <div class="form-group">
+          <label>Compare against your planned budget (optional)</label>
+          <input type="number" id="calc-compare-budget" placeholder="e.g. 15000">
         </div>
         <div class="form-group full">
           <div id="calc-result" class="calc-result">
-            Enter a budget to estimate how many years of care it covers.
+            Select a pet type and enter age to generate a recommended trust fund.
           </div>
         </div>
       </div>
@@ -1783,13 +1885,13 @@ function showPage(id) {
 // Pet management
 let pets = [];
 const careCostProfiles = {
-  'golden retriever': { monthly: 140, lifespan: 12, label: 'Golden Retriever' },
-  'labrador': { monthly: 150, lifespan: 12, label: 'Labrador' },
-  'small dog': { monthly: 95, lifespan: 14, label: 'Small Dog' },
-  'cat': { monthly: 75, lifespan: 15, label: 'Cat' },
-  'rabbit': { monthly: 60, lifespan: 10, label: 'Rabbit' },
-  'bird': { monthly: 55, lifespan: 18, label: 'Bird / Parrot' },
-  'senior dog': { monthly: 185, lifespan: 6, label: 'Senior Dog' }
+  'dog-small': { monthly: 105, lifespan: 14, label: 'Small Dog', medicalWeight: 0.28, continuityWeight: 0.13, emergencyWeight: 0.09 },
+  'dog-medium': { monthly: 135, lifespan: 13, label: 'Medium Dog', medicalWeight: 0.31, continuityWeight: 0.14, emergencyWeight: 0.10 },
+  'dog-large': { monthly: 175, lifespan: 11, label: 'Large Dog', medicalWeight: 0.35, continuityWeight: 0.16, emergencyWeight: 0.12 },
+  'dog-senior': { monthly: 210, lifespan: 8, label: 'Senior Dog', medicalWeight: 0.42, continuityWeight: 0.18, emergencyWeight: 0.14 },
+  'cat-indoor': { monthly: 85, lifespan: 16, label: 'Indoor Cat', medicalWeight: 0.26, continuityWeight: 0.12, emergencyWeight: 0.08 },
+  'cat-outdoor': { monthly: 105, lifespan: 13, label: 'Outdoor Cat', medicalWeight: 0.33, continuityWeight: 0.15, emergencyWeight: 0.11 },
+  'cat-senior': { monthly: 120, lifespan: 10, label: 'Senior Cat', medicalWeight: 0.38, continuityWeight: 0.16, emergencyWeight: 0.12 }
 };
 
 function addPet() {
@@ -1878,17 +1980,78 @@ function updateMascotGuidance() {
 
 function updateCareCalculator() {
   const typeKey = document.getElementById('calc-pet-type').value;
-  const budget = Number(document.getElementById('calc-budget').value || 0);
+  const age = Number(document.getElementById('calc-age').value || 0);
+  const compareBudget = Number(document.getElementById('calc-compare-budget').value || 0);
   const profile = careCostProfiles[typeKey];
   const resultEl = document.getElementById('calc-result');
-  if (!budget || !profile) {
-    resultEl.textContent = 'Enter a budget to estimate how many years of care it covers.';
+  if (!profile || age < 0 || !age) {
+    resultEl.classList.remove('planning-screen');
+    resultEl.textContent = 'Select a pet type and enter age to generate a recommended trust fund.';
     return;
   }
-  const annualCost = profile.monthly * 12;
-  const coveredYears = budget / annualCost;
-  const enough = coveredYears >= profile.lifespan;
-  resultEl.textContent = `$${budget.toLocaleString()} covers about ${coveredYears.toFixed(1)} years of food + basic vet care for a ${profile.label}. Expected lifespan is ~${profile.lifespan} years, so this budget is ${enough ? 'likely sufficient' : 'likely short'}.`;
+  const roundMoney = (n, unit = 100) => Math.round(n / unit) * unit;
+  const remainingYears = Math.max(1, profile.lifespan - age);
+  const annualBase = profile.monthly * 12;
+  const lifetimeCare = Math.round(annualBase * remainingYears);
+  const medicalBuffer = Math.round(lifetimeCare * (profile.medicalWeight || 0.3));
+  const continuityReserve = Math.round(lifetimeCare * (profile.continuityWeight || 0.15));
+  const emergencyBuffer = Math.round(lifetimeCare * (profile.emergencyWeight || 0.1));
+  const recommended = lifetimeCare + medicalBuffer + continuityReserve + emergencyBuffer;
+  const rangeLow = roundMoney(recommended * 0.9, 500);
+  const rangeHigh = roundMoney(recommended * 1.15, 500);
+  const annualRounded = roundMoney(annualBase, 100);
+  const dailyNutrition = roundMoney(lifetimeCare * 0.58, 100);
+  const routineVet = roundMoney(lifetimeCare * 0.42, 100);
+  const contingency = roundMoney(medicalBuffer + emergencyBuffer, 100);
+  const endOfLife = roundMoney(continuityReserve, 100);
+
+  const delta = compareBudget ? compareBudget - recommended : 0;
+  const comparisonLabel = !compareBudget
+    ? '<div class="calc-breakdown-row"><span>Planned Trust Fund</span><strong>Not provided</strong></div>'
+    : `<div class="calc-breakdown-row"><span>Planned Trust Fund</span><strong>${delta > 0 ? 'Above recommended range' : delta < 0 ? 'Below recommended range' : 'Within recommended range'}</strong></div>`;
+
+  resultEl.classList.add('planning-screen');
+  resultEl.innerHTML = `
+    <div class="calc-headline">Estimated Lifetime Care Requirement</div>
+    <div class="calc-range">$${rangeLow.toLocaleString()} – $${rangeHigh.toLocaleString()}</div>
+    <div class="calc-support">Based on pet size, current age, projected lifespan, and long-term care reserve.</div>
+
+    <div class="calc-mini-cards">
+      <div class="calc-mini-card"><span>Remaining Care Horizon</span><strong>${remainingYears} years</strong></div>
+      <div class="calc-mini-card"><span>Estimated Annual Care Cost</span><strong>$${annualRounded.toLocaleString()}</strong></div>
+      <div class="calc-mini-card"><span>Planning Status</span><strong>Recommendation Ready</strong></div>
+    </div>
+
+    <div class="calc-block-title">Calculation Factors</div>
+    <ul class="calc-factors">
+      <li>Remaining lifespan projection</li>
+      <li>Annual cost of care</li>
+      <li>Contingency and medical reserve</li>
+      <li>End-of-life support allocation</li>
+    </ul>
+
+    <div class="calc-block-title">Estimated Breakdown</div>
+    <div class="calc-breakdown-row"><span>Daily care and nutrition</span><strong>$${dailyNutrition.toLocaleString()}</strong></div>
+    <div class="calc-breakdown-row"><span>Routine veterinary care</span><strong>$${routineVet.toLocaleString()}</strong></div>
+    <div class="calc-breakdown-row"><span>Contingency reserve</span><strong>$${contingency.toLocaleString()}</strong></div>
+    <div class="calc-breakdown-row"><span>End-of-life support</span><strong>$${endOfLife.toLocaleString()}</strong></div>
+
+    <div class="calc-block-title">Why this range?</div>
+    <div class="calc-why">This estimate is intended to help pet owners choose a realistic trust fund amount before attorney review, notarization, and final funding.</div>
+
+    <div class="calc-block-title">Planned Trust Fund</div>
+    ${comparisonLabel}
+
+    <div class="calc-actions">
+      <button class="primary" onclick="generateTrust()">Generate Planning Draft</button>
+      <button class="secondary" onclick="showPage('legal')">Review Legal Workflow</button>
+      <button class="link" onclick="showToast('Estimates use pet type, age, projected lifespan, and reserve assumptions.')">How we estimate this amount</button>
+    </div>
+  `;
+
+  document.getElementById('fund-amount').value = recommended;
+  updateLivePreview();
+  updateMascotGuidance();
 }
 
 function buildFallbackDocument(ownerFullName, state, trustee, petsText, fundAmt) {
@@ -2316,7 +2479,8 @@ function showActivationStep(step) {
   if (el) el.addEventListener('input', () => { updateLivePreview(); updateMascotGuidance(); });
 });
 document.getElementById('owner-state')?.addEventListener('change', updateMascotGuidance);
-document.getElementById('calc-budget').addEventListener('input', updateCareCalculator);
+document.getElementById('calc-age').addEventListener('input', updateCareCalculator);
+document.getElementById('calc-compare-budget').addEventListener('input', updateCareCalculator);
 document.getElementById('calc-pet-type').addEventListener('change', updateCareCalculator);
 document.getElementById('oversight-enabled').addEventListener('change', toggleOversightFrequency);
 updateLivePreview();
