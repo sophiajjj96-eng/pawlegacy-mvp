@@ -1495,10 +1495,6 @@
           <label>Pet Age (years)</label>
           <input type="number" id="calc-age" placeholder="e.g. 5" min="0" max="40">
         </div>
-        <div class="form-group">
-          <label>Compare against your planned budget (optional)</label>
-          <input type="number" id="calc-compare-budget" placeholder="e.g. 15000">
-        </div>
         <div class="form-group full">
           <div id="calc-result" class="calc-result">
             Select a pet type and enter age to generate a recommended trust fund.
@@ -1885,13 +1881,13 @@ function showPage(id) {
 // Pet management
 let pets = [];
 const careCostProfiles = {
-  'dog-small': { monthly: 105, lifespan: 14, label: 'Small Dog', medicalWeight: 0.28, continuityWeight: 0.13, emergencyWeight: 0.09 },
-  'dog-medium': { monthly: 135, lifespan: 13, label: 'Medium Dog', medicalWeight: 0.31, continuityWeight: 0.14, emergencyWeight: 0.10 },
-  'dog-large': { monthly: 175, lifespan: 11, label: 'Large Dog', medicalWeight: 0.35, continuityWeight: 0.16, emergencyWeight: 0.12 },
-  'dog-senior': { monthly: 210, lifespan: 8, label: 'Senior Dog', medicalWeight: 0.42, continuityWeight: 0.18, emergencyWeight: 0.14 },
-  'cat-indoor': { monthly: 85, lifespan: 16, label: 'Indoor Cat', medicalWeight: 0.26, continuityWeight: 0.12, emergencyWeight: 0.08 },
-  'cat-outdoor': { monthly: 105, lifespan: 13, label: 'Outdoor Cat', medicalWeight: 0.33, continuityWeight: 0.15, emergencyWeight: 0.11 },
-  'cat-senior': { monthly: 120, lifespan: 10, label: 'Senior Cat', medicalWeight: 0.38, continuityWeight: 0.16, emergencyWeight: 0.12 }
+  'dog-small': { annualFood: 250, annualVet: 250, annualBuffer: 150, annualMisc: 150, lifespan: 14, label: 'Small Dog', reserveWeight: 0.18 },
+  'dog-medium': { annualFood: 400, annualVet: 350, annualBuffer: 200, annualMisc: 250, lifespan: 13, label: 'Medium Dog', reserveWeight: 0.2 },
+  'dog-large': { annualFood: 650, annualVet: 450, annualBuffer: 300, annualMisc: 300, lifespan: 11, label: 'Large Dog', reserveWeight: 0.22 },
+  'dog-senior': { annualFood: 650, annualVet: 700, annualBuffer: 350, annualMisc: 350, lifespan: 8, label: 'Senior Dog', reserveWeight: 0.28 },
+  'cat-indoor': { annualFood: 220, annualVet: 220, annualBuffer: 140, annualMisc: 120, lifespan: 16, label: 'Indoor Cat', reserveWeight: 0.16 },
+  'cat-outdoor': { annualFood: 260, annualVet: 320, annualBuffer: 190, annualMisc: 130, lifespan: 13, label: 'Outdoor Cat', reserveWeight: 0.2 },
+  'cat-senior': { annualFood: 260, annualVet: 420, annualBuffer: 230, annualMisc: 170, lifespan: 10, label: 'Senior Cat', reserveWeight: 0.25 }
 };
 
 function addPet() {
@@ -1981,7 +1977,6 @@ function updateMascotGuidance() {
 function updateCareCalculator() {
   const typeKey = document.getElementById('calc-pet-type').value;
   const age = Number(document.getElementById('calc-age').value || 0);
-  const compareBudget = Number(document.getElementById('calc-compare-budget').value || 0);
   const profile = careCostProfiles[typeKey];
   const resultEl = document.getElementById('calc-result');
   if (!profile || age < 0 || !age) {
@@ -1991,24 +1986,17 @@ function updateCareCalculator() {
   }
   const roundMoney = (n, unit = 100) => Math.round(n / unit) * unit;
   const remainingYears = Math.max(1, profile.lifespan - age);
-  const annualBase = profile.monthly * 12;
+  const annualBase = profile.annualFood + profile.annualVet + profile.annualBuffer + profile.annualMisc;
   const lifetimeCare = Math.round(annualBase * remainingYears);
-  const medicalBuffer = Math.round(lifetimeCare * (profile.medicalWeight || 0.3));
-  const continuityReserve = Math.round(lifetimeCare * (profile.continuityWeight || 0.15));
-  const emergencyBuffer = Math.round(lifetimeCare * (profile.emergencyWeight || 0.1));
-  const recommended = lifetimeCare + medicalBuffer + continuityReserve + emergencyBuffer;
+  const contingencyReserve = Math.round(lifetimeCare * (profile.reserveWeight || 0.2));
+  const recommended = lifetimeCare + contingencyReserve;
   const rangeLow = roundMoney(recommended * 0.9, 500);
-  const rangeHigh = roundMoney(recommended * 1.15, 500);
+  const rangeHigh = roundMoney(recommended * 1.1, 500);
   const annualRounded = roundMoney(annualBase, 100);
-  const dailyNutrition = roundMoney(lifetimeCare * 0.58, 100);
-  const routineVet = roundMoney(lifetimeCare * 0.42, 100);
-  const contingency = roundMoney(medicalBuffer + emergencyBuffer, 100);
-  const endOfLife = roundMoney(continuityReserve, 100);
-
-  const delta = compareBudget ? compareBudget - recommended : 0;
-  const comparisonLabel = !compareBudget
-    ? '<div class="calc-breakdown-row"><span>Planned Trust Fund</span><strong>Not provided</strong></div>'
-    : `<div class="calc-breakdown-row"><span>Planned Trust Fund</span><strong>${delta > 0 ? 'Above recommended range' : delta < 0 ? 'Below recommended range' : 'Within recommended range'}</strong></div>`;
+  const dailyNutrition = roundMoney(profile.annualFood * remainingYears, 100);
+  const routineVet = roundMoney(profile.annualVet * remainingYears, 100);
+  const contingency = roundMoney((profile.annualBuffer * remainingYears) + contingencyReserve, 100);
+  const endOfLife = roundMoney(profile.annualMisc * remainingYears, 100);
 
   resultEl.classList.add('planning-screen');
   resultEl.innerHTML = `
@@ -2037,10 +2025,7 @@ function updateCareCalculator() {
     <div class="calc-breakdown-row"><span>End-of-life support</span><strong>$${endOfLife.toLocaleString()}</strong></div>
 
     <div class="calc-block-title">Why this range?</div>
-    <div class="calc-why">This estimate is intended to help pet owners choose a realistic trust fund amount before attorney review, notarization, and final funding.</div>
-
-    <div class="calc-block-title">Planned Trust Fund</div>
-    ${comparisonLabel}
+    <div class="calc-why">This estimate includes a contingency reserve to help ensure your pet’s care remains covered even under unexpected circumstances.<br><br>This estimate is intended to help pet owners choose a realistic trust fund amount before attorney review, notarization, and final funding.</div>
 
     <div class="calc-actions">
       <button class="primary" onclick="generateTrust()">Generate Planning Draft</button>
@@ -2480,7 +2465,6 @@ function showActivationStep(step) {
 });
 document.getElementById('owner-state')?.addEventListener('change', updateMascotGuidance);
 document.getElementById('calc-age').addEventListener('input', updateCareCalculator);
-document.getElementById('calc-compare-budget').addEventListener('input', updateCareCalculator);
 document.getElementById('calc-pet-type').addEventListener('change', updateCareCalculator);
 document.getElementById('oversight-enabled').addEventListener('change', toggleOversightFrequency);
 updateLivePreview();
