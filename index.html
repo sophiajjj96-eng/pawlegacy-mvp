@@ -1124,6 +1124,56 @@
   }
   .packet-card h6 { font-size: 0.84rem; color: var(--bark); margin-bottom: 0.3rem; }
   .packet-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+  .edu-container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .edu-hero, .edu-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+  }
+  .edu-hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--bark);
+    margin-bottom: 0.4rem;
+  }
+  .edu-hero p, .edu-card p, .edu-card li { color: var(--text-mid); font-size: 0.9rem; line-height: 1.7; }
+  .edu-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .edu-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+  .edu-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--bark);
+    margin-bottom: 0.45rem;
+  }
+  .edu-step {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    padding: 0.75rem;
+  }
+  .edu-step .n { font-size: 0.72rem; color: var(--text-light); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .edu-step strong { color: var(--bark); display: block; margin-bottom: 0.2rem; }
+  .edu-compare {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.4rem;
+  }
+  .edu-compare th, .edu-compare td {
+    border: 1px solid var(--border);
+    padding: 0.55rem;
+    text-align: left;
+    font-size: 0.86rem;
+    vertical-align: top;
+  }
+  .edu-compare th { background: #faf7f2; color: var(--bark); font-weight: 700; }
 
   .lifestyle-row {
     max-width: 1100px;
@@ -1245,6 +1295,7 @@
     .workflow-rail { grid-template-columns: 1fr 1fr; }
     .result-panels { grid-template-columns: 1fr; }
     .calc-mini-cards { grid-template-columns: 1fr; }
+    .edu-grid-2, .edu-grid-3 { grid-template-columns: 1fr; }
     .meta-grid { grid-template-columns: 1fr 1fr; }
     .continuity-cards { grid-template-columns: 1fr; }
     .legal-signatures { grid-template-columns: 1fr; }
@@ -1328,6 +1379,7 @@
   <div class="nav-logo"><span class="paw">🐾</span> PawLegacy</div>
   <div class="nav-links">
     <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('education')">What Is a Pet Trust?</a>
     <a onclick="showPage('trust')">Create Trust</a>
     <a onclick="showPage('legal')">Legal Support</a>
     <a onclick="showPage('pricing')">Pricing</a>
@@ -1439,6 +1491,98 @@
   <footer>
     <strong>PawLegacy</strong> — Protecting every pet, one trust at a time. &nbsp;·&nbsp; Built at NYU Tandon &nbsp;·&nbsp; © 2026
   </footer>
+</div>
+
+<!-- ========== EDUCATION PAGE ========== -->
+<div id="page-education" class="page">
+  <div class="edu-container">
+    <section class="edu-hero">
+      <h2>What Is a Pet Trust?</h2>
+      <p>A simple way to help ensure your pet is cared for if something happens to you.</p>
+      <p>A pet trust is a legal arrangement that sets aside money and instructions for your pet’s care when you can no longer provide that care yourself. For many owners, it offers peace of mind that care and funding are planned together.</p>
+    </section>
+
+    <section class="edu-card">
+      <h3>Why It Matters</h3>
+      <p>Pets cannot inherit money directly. Many owners assume a friend or family member will step in, but long-term care can become difficult without clear funding and instructions. A pet trust helps connect both: a caregiver and a funding plan.</p>
+    </section>
+
+    <section class="edu-card">
+      <h3>How a Pet Trust Works</h3>
+      <div class="edu-grid-2">
+        <div class="edu-step"><div class="n">Step 1</div><strong>You choose a caregiver</strong><p>Set practical daily-care instructions for your pet.</p></div>
+        <div class="edu-step"><div class="n">Step 2</div><strong>Funds are set aside</strong><p>Money is allocated in a trust for approved care costs.</p></div>
+        <div class="edu-step"><div class="n">Step 3</div><strong>A trustee manages the funds</strong><p>The trustee follows your instructions and oversees distributions.</p></div>
+        <div class="edu-step"><div class="n">Step 4</div><strong>Caregiver receives support</strong><p>The caregiver is financially supported for ongoing pet care.</p></div>
+      </div>
+    </section>
+
+    <section class="edu-grid-3">
+      <div class="edu-card">
+        <h3>Caregiver</h3>
+        <p>The person who directly looks after your pet day to day.</p>
+      </div>
+      <div class="edu-card">
+        <h3>Trustee</h3>
+        <p>The person or trust company that manages the trust funds according to your instructions.</p>
+      </div>
+      <div class="edu-card">
+        <h3>Remainder Beneficiary</h3>
+        <p>The person or organization that receives any remaining trust funds after your pet passes away.</p>
+      </div>
+    </section>
+
+    <section class="edu-card">
+      <h3>How the Money Is Managed</h3>
+      <p>In a pet trust, funds are not simply handed over in one payment. The trustee or trust company manages distributions according to your instructions so support remains available over time for food, veterinary care, grooming, medication, boarding, emergency care, and end-of-life expenses.</p>
+    </section>
+
+    <section class="edu-card">
+      <h3>What You Can Customize</h3>
+      <ul>
+        <li>Feeding schedule and nutrition preferences</li>
+        <li>Veterinarian preferences and treatment guidance</li>
+        <li>Medication details and medical alerts</li>
+        <li>Exercise routines and behavioral needs</li>
+        <li>Sleeping arrangements and preferred living environment</li>
+        <li>End-of-life wishes and oversight frequency</li>
+      </ul>
+    </section>
+
+    <section class="edu-card">
+      <h3>When It Takes Effect</h3>
+      <p>A pet trust is typically structured to become active when the owner dies or becomes unable to care for the pet, depending on how the plan is drafted and executed.</p>
+    </section>
+
+    <section class="edu-card">
+      <h3>Pet Trust vs. A Will</h3>
+      <table class="edu-compare" role="presentation">
+        <tr><th>Will</th><td>Can name a caretaker and leave money, often without detailed ongoing fund-management instructions.</td></tr>
+        <tr><th>Pet Trust</th><td>Provides added structure for how money is managed and used over time for your pet’s care.</td></tr>
+      </table>
+    </section>
+
+    <section class="edu-card">
+      <h3>Legal Accuracy Note</h3>
+      <p>PawLegacy helps you prepare a structured planning draft. Final legal enforceability depends on attorney review, execution, notarization where required, and funding.</p>
+    </section>
+
+    <section class="edu-card faq-section">
+      <h3>FAQ</h3>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can my pet inherit money directly? <span class="faq-arrow">▾</span></div><div class="faq-a">No. A trust structure is used to manage funds for a pet’s benefit through responsible parties.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What is the difference between a caregiver and a trustee? <span class="faq-arrow">▾</span></div><div class="faq-a">The caregiver provides daily care. The trustee manages funds and distributions under your instructions.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How much money should I set aside? <span class="faq-arrow">▾</span></div><div class="faq-a">It depends on your pet’s age, expected care horizon, and medical needs. PawLegacy provides a planning estimate to help you start.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Does the trust company control the money? <span class="faq-arrow">▾</span></div><div class="faq-a">A trustee or trust company manages funds under the terms you establish in the trust documents.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Can I include detailed care instructions? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes. You can include practical instructions about routines, health, environment, and oversight.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Is this the same as a will? <span class="faq-arrow">▾</span></div><div class="faq-a">Not exactly. A will can name caretakers and assets, while a pet trust typically adds clearer structure for fund management over time.</div></div>
+    </section>
+
+    <section class="edu-card" style="text-align:center;">
+      <h3>Ready to start?</h3>
+      <p>Build your planning draft and review key care and funding decisions in one place.</p>
+      <button class="btn-primary" onclick="showPage('trust')">Create Your Planning Draft</button>
+    </section>
+  </div>
 </div>
 
 <!-- ========== TRUST FORM PAGE ========== -->
